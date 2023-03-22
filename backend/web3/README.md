@@ -1,2 +1,0 @@
-# CS731
-Blockchain
