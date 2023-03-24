@@ -1,5 +1,34 @@
 {% extends "common.html" %} {% block content %}
-<h2>Select candidate [<i>007</i>]</h2>
+
+
+<div class="container">
+    <h2>
+        Voter details
+        <a href="logout">
+            <button class='btn btn-danger pull-right'>
+                Logout
+            </button>
+        </a>
+    </h2>
+    <table class="table table-hover">
+        <tbody>
+            <tr class="info">
+                <td>Roll number</td>
+                <td>{{ user.roll_number_hash }}</td>
+            </tr>
+            <tr class="info">
+                <td>Wallet address</td>
+                <td>{{ user.wallet_address }}</td>
+            </tr>
+            <tr class="info">
+                <td>Vote status</td>
+                <td>{{ user.vote_status }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2>Select candidate</h2>
 
 <table class="table table-striped">
     <thead>

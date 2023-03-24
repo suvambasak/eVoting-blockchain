@@ -1,7 +1,8 @@
 from . import database
+from flask_login import UserMixin
 
 
-class Voter(database.Model):
+class Voter(database.Model, UserMixin):
     id = database.Column(
         database.Integer,
         primary_key=True

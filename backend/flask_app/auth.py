@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, logout_user, login_required
 from .models import Voter
 from . import database
 import hashlib
@@ -33,8 +34,16 @@ def signin_post():
         return redirect(url_for('auth.index'))
 
     # Login code here
+    login_user(voter)
 
     return redirect(url_for('main.candidates'))
+
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth.index'))
 
 
 @auth.route('/signup', methods=['POST'])
