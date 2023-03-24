@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from .models import Voter
 from . import database
 import hashlib
@@ -19,10 +19,20 @@ def signup():
 
 @auth.route('/signin', methods=['POST'])
 def signin_post():
-    roll_number = request.form.get('rollno')
-    password = request.form.get('pwd')
+    roll_number = request.form.get('rollno').strip()
+    password = request.form.get('pwd').strip()
 
-    print(roll_number, password)
+    roll_number_hash = hashlib.sha256(bytes(roll_number, 'UTF-8')).hexdigest()
+
+    voter = Voter.query.filter_by(roll_number_hash=roll_number_hash).first()
+
+    if not voter:
+        return redirect(url_for('auth.signup'))
+
+    if not check_password_hash(voter.password, password):
+        return redirect(url_for('auth.index'))
+
+    # Login code here
 
     return redirect(url_for('main.candidates'))
 

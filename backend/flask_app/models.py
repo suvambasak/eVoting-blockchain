@@ -2,9 +2,14 @@ from . import database
 
 
 class Voter(database.Model):
+    id = database.Column(
+        database.Integer,
+        primary_key=True
+    )
+
     roll_number_hash = database.Column(
         database.String(64),
-        primary_key=True
+        unique=True
     )
 
     password = database.Column(
@@ -26,6 +31,7 @@ class Voter(database.Model):
     def __repr__(self) -> str:
         return f'''
         Voter (
+            id: {self.id}
             roll_number_hash: {self.roll_number_hash}
             password: {self.password}
             wallet_address: {self.wallet_address}
