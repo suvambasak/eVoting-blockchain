@@ -39,3 +39,33 @@ class Voter(database.Model, UserMixin):
             vote_status: {self.vote_status}
         )
         '''
+
+
+class Candidate(database.Model):
+    id = database.Column(
+        database.Integer,
+        primary_key=True
+    )
+
+    roll_number = database.Column(
+        database.String(64),
+        unique=True
+    )
+
+    name = database.Column(
+        database.String(100),
+        nullable=False
+    )
+
+    vote_count = database.Column(
+        database.Integer,
+        default=0
+    )
+
+    def __repr__(self) -> str:
+        return f'''
+            id: {self.id}
+            roll_number: {self.roll_number}
+            name: {self.name}
+            vote_count: {self.vote_count}
+        '''
