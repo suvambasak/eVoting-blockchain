@@ -14,7 +14,7 @@ def create_app():
     app.config['SECRET_KEY'] = 'secret-key'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     app.config['BEGIN'] = not os.path.exists(
-        '/home/suvam/Projects/sc5-evoting-g10/backend/instance/db.sqlite'
+        '/home/suvam/Projects/sc5-evoting-g10/instance/db.sqlite'
     )
 
     database.init_app(app)
