@@ -33,27 +33,22 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Firstname</th>
-            <th>Lastname</th>
+            <th>Roll number</th>
+            <th>Name</th>
             <th>Cast vote</th>
         </tr>
     </thead>
     <tbody>
+
+        {% for candidate in candidates %}
         <tr>
-            <td>John</td>
-            <td>Doe</td>
+            <td>{{ candidate.roll_number }}</td>
+            <td>{{ candidate.name }}</td>
             <td><button type="button" class="btn btn-sm btn-success">Vote</button></td>
         </tr>
-        <tr>
-            <td>Mary</td>
-            <td>Moe</td>
-            <td><button type="button" class="btn btn-sm btn-success">Vote</button></td>
-        </tr>
-        <tr>
-            <td>July</td>
-            <td>Dooley</td>
-            <td><button type="button" class="btn btn-sm btn-success">Vote</button></td>
-        </tr>
+        {% endfor %}
+
+
     </tbody>
 </table>
 
