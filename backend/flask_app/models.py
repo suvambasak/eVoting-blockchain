@@ -1,5 +1,6 @@
-from . import database
 from flask_login import UserMixin
+
+from . import database
 
 
 class Voter(database.Model, UserMixin):

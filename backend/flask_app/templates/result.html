@@ -1,57 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "common.html" %} {% block content %}
+<h2>Result
+    <a href="{{url_for('auth.index')}}">
+        <button class='btn btn-default pull-right'>
+            Back
+        </button>
+    </a>
+</h2>
 
-<head>
-    <title>Home | G10</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-</head>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Roll number</th>
+            <th>Name</th>
+            <th>Vote count</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for candidate in candidates %}
 
-<body>
+        <tr class="{{'success' if candidate.id in max_vote_owner_id else 'active'}}">
+            <td>{{ candidate.roll_number }}</td>
+            <td>{{ candidate.name }}</td>
+            <td>{{ candidate.vote_count }}</td>
+        </tr>
 
-    <div class="jumbotron text-center">
-        <h1>SC-5 eVoting G10</h1>
-        <p>Online vorting system using with <b>Blockchain Technology</b></p>
-    </div>
+        {% endfor %}
 
-
-    <div class="container">
-        <h2>Result</h2>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Firstname</th>
-                    <th>Lastname</th>
-                    <th>Vote count</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="success">
-                    <td>John</td>
-                    <td>Doe</td>
-                    <td>3323</td>
-                </tr>
-                <tr class="active">
-                    <td>Mary</td>
-                    <td>Moe</td>
-                    <td>1234</td>
-                </tr>
-                <tr class="active">
-                    <td>July</td>
-                    <td>Dooley</td>
-                    <td>0</td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div>
-
-
-
-</body>
-
-</html>
+    </tbody>
+</table>
+{% endblock %}

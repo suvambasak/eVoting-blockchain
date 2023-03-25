@@ -1,9 +1,11 @@
-from flask import Blueprint, render_template, url_for, request, redirect
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, logout_user, login_required, current_user
-from .models import Voter
-from . import database
 import hashlib
+
+from flask import Blueprint, redirect, render_template, request, url_for
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from . import database
+from .models import Candidate, Voter
 
 auth = Blueprint('auth', __name__)
 
@@ -57,10 +59,6 @@ def signup_post():
     roll_number_hash = hashlib.sha256(bytes(roll_number, 'UTF-8')).hexdigest()
     password_hash = generate_password_hash(password, method='sha256')
 
-    # print(roll_number, roll_number_hash, len(roll_number_hash))
-    # print(wallet_address)
-    # print(password, password_hash, len(password_hash))
-
     if not Voter.query.filter_by(roll_number_hash=roll_number_hash).all():
         database.session.add(
             Voter(
@@ -73,3 +71,17 @@ def signup_post():
         database.session.commit()
 
     return redirect(url_for('auth.index'))
+
+
+@auth.route('/result')
+def result():
+    candidates = Candidate.query.order_by(Candidate.vote_count.desc()).all()
+    max_vote_owner_id = []
+    if candidates:
+        max_vote = candidates[0].vote_count
+
+        for candidate in candidates:
+            if candidate.vote_count == max_vote:
+                max_vote_owner_id.append(candidate.id)
+
+    return render_template('result.html', candidates=candidates, max_vote_owner_id=max_vote_owner_id)

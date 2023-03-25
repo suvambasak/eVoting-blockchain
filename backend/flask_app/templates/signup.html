@@ -1,6 +1,13 @@
 {% extends "common.html" %} {% block content %}
-<h2>Sign up here</h2>
-<form method="POST" action="/signup">
+<h2>
+    Sign up here
+    <a href="{{url_for('auth.index')}}">
+        <button class='btn btn-default pull-right'>
+            Back
+        </button>
+    </a>
+</h2>
+<form method="POST" action="{{url_for('auth.signup_post')}}">
     <div class="form-group">
         <label for="rollno">Roll No:</label>
         <input type="text" class="form-control" id="rollno" placeholder="Enter roll number" name="rollno">

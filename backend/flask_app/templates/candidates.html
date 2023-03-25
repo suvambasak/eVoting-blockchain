@@ -4,8 +4,8 @@
 <div class="container">
     <h2>
         Voter details
-        <a href="logout">
-            <button class='btn btn-danger pull-right'>
+        <a href="{{url_for('auth.logout')}}">
+            <button class="btn btn-danger pull-right">
                 Logout
             </button>
         </a>
@@ -22,7 +22,7 @@
             </tr>
             <tr class="info">
                 <td>Vote status</td>
-                <td>{{ user.vote_status }}</td>
+                <td><span class="label label-primary">{{ 'VOTED' if user.vote_status else 'NOT VOTED'}}</span></td>
             </tr>
         </tbody>
     </table>
@@ -44,7 +44,16 @@
         <tr>
             <td>{{ candidate.roll_number }}</td>
             <td>{{ candidate.name }}</td>
-            <td><button type="button" class="btn btn-sm btn-success">Vote</button></td>
+            <td>
+                {% if not user.vote_status %}
+                <a href="{{url_for('main.cast_vote', candidate_id=candidate.id)}}">
+                    <button type="button" class="btn btn-sm btn-success">Vote</button>
+                </a>
+                {% endif %}
+                {% if user.vote_status %}
+                <button type="button" class="btn btn-sm disabled">Voted</button>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
 
