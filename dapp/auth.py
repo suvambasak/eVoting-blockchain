@@ -1,6 +1,6 @@
 import hashlib
 
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -70,6 +70,7 @@ def signup_post():
         )
         database.session.commit()
 
+    flash('Voter registration complete')
     return redirect(url_for('auth.index'))
 
 

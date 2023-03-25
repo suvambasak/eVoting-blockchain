@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, flash
 from flask_login import current_user, login_required
 
 from . import database
@@ -36,6 +36,8 @@ def cast_vote(candidate_id):
 @main.route('/cast_vote/<int:candidate_id>/confirm', methods=['POST'])
 @login_required
 def cast_vote_confirm(candidate_id):
+    flash('Processing')
+
     parivate_key = request.form.get('parivate_key').strip()
 
     selected_candidate = Candidate.query.filter_by(
@@ -50,4 +52,5 @@ def cast_vote_confirm(candidate_id):
     selected_candidate.vote_count += 1
     database.session.commit()
 
+    flash('Transaction confirmed')
     return redirect(url_for('main.candidates'))
