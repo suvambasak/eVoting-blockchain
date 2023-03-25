@@ -29,7 +29,6 @@ def cast_vote(candidate_id):
         id=candidate_id
     ).first_or_404()
 
-    print(selected_candidate)
     return render_template('candidates_confirm.html', selected_candidate=selected_candidate)
 
 
