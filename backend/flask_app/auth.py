@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from .models import Voter
 from . import database
 import hashlib
@@ -10,6 +10,8 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/')
 def index():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.candidates'))
     return render_template('index.html')
 
 
