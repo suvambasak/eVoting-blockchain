@@ -1,49 +1,55 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 import os
+
+from flask import Flask
+from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
+
+
+def init_candidates(path, db, Candidate):
+    import csv
+
+    with open(path) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        next(csv_reader)
+
+        for row in csv_reader:
+            db.session.add(
+                Candidate(
+                    roll_number=row[0],
+                    name=row[1]
+                )
+            )
+
+        db.session.commit()
 
 
 database = SQLAlchemy()
 
 
 def create_app():
+    WORKING_DIRECTORY = os.getcwd()
+    DB_NAME = 'offchain.sqlite'
+    CSV_DIR = f'{WORKING_DIRECTORY}/CSV/candidates.csv'
 
     app = Flask(__name__)
-
     app.config['SECRET_KEY'] = 'secret-key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-    app.config['BEGIN'] = not os.path.exists(
-        '/home/suvam/Projects/sc5-evoting-g10/instance/db.sqlite'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['EPOCH'] = not os.path.exists(
+        f'{WORKING_DIRECTORY}/instance/offchain.sqlite'
     )
 
     database.init_app(app)
 
     from . import models
-
     with app.app_context():
         database.create_all()
 
-        if app.config['BEGIN']:
-            database.session.add(
-                models.Candidate(
-                    roll_number='22111007',
-                    name='Candidate Name 1'
-                )
+        if app.config['EPOCH']:
+            init_candidates(
+                CSV_DIR,
+                database,
+                models.Candidate,
             )
-            database.session.add(
-                models.Candidate(
-                    roll_number='22111008',
-                    name='Candidate Name 2'
-                )
-            )
-            database.session.add(
-                models.Candidate(
-                    roll_number='22111009',
-                    name='Candidate Name 3'
-                )
-            )
-            database.session.commit()
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.index'
