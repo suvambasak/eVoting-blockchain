@@ -1,16 +1,5 @@
 {% extends "common.html" %} {% block content %}
 
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<ul class="list-group">
-    {% for message in messages %}
-    <li class="list-group-item list-group-item-warning">{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-{% endwith %}
-
-
 <div class="container">
 
     <div class="container">
