@@ -5,7 +5,8 @@ from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import database
-from .models import Candidate, Voter
+from .models import Voter
+from .validator import validate_signup, validate_signin
 
 auth = Blueprint('auth', __name__)
 
@@ -27,8 +28,12 @@ def signin_post():
     roll_number = request.form.get('rollno').strip()
     password = request.form.get('pwd').strip()
 
-    roll_number_hash = hashlib.sha256(bytes(roll_number, 'UTF-8')).hexdigest()
+    valid, msg = validate_signin(roll_number, password)
+    if not valid:
+        flash(msg)
+        return redirect(url_for('auth.index'))
 
+    roll_number_hash = hashlib.sha256(bytes(roll_number, 'UTF-8')).hexdigest()
     voter = Voter.query.filter_by(roll_number_hash=roll_number_hash).first()
 
     if not voter:
@@ -55,11 +60,25 @@ def signup_post():
     roll_number = request.form.get('rollno').strip()
     wallet_address = request.form.get('walletaddr').strip()
     password = request.form.get('pwd').strip()
+    confirm_password = request.form.get('cnf_pwd').strip()
+
+    valid, msg = validate_signup(
+        roll_number,
+        wallet_address,
+        password,
+        confirm_password
+    )
+
+    if not valid:
+        flash(msg)
+        return redirect(url_for('auth.signup'))
 
     roll_number_hash = hashlib.sha256(bytes(roll_number, 'UTF-8')).hexdigest()
     password_hash = generate_password_hash(password, method='sha256')
 
-    if not Voter.query.filter_by(roll_number_hash=roll_number_hash).all():
+    if Voter.query.filter_by(roll_number_hash=roll_number_hash).all():
+        flash('Already registerd voter')
+    else:
         database.session.add(
             Voter(
                 roll_number_hash=roll_number_hash,
@@ -70,19 +89,6 @@ def signup_post():
         )
         database.session.commit()
 
-    flash('Voter registration complete')
+        flash('Voter registration complete')
+
     return redirect(url_for('auth.index'))
-
-
-@auth.route('/result')
-def result():
-    candidates = Candidate.query.order_by(Candidate.vote_count.desc()).all()
-    max_vote_owner_id = []
-    if candidates:
-        max_vote = candidates[0].vote_count
-
-        for candidate in candidates:
-            if candidate.vote_count == max_vote:
-                max_vote_owner_id.append(candidate.id)
-
-    return render_template('result.html', candidates=candidates, max_vote_owner_id=max_vote_owner_id)

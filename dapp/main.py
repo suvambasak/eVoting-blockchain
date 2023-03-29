@@ -53,3 +53,17 @@ def cast_vote_confirm(candidate_id):
 
     flash('Transaction confirmed')
     return redirect(url_for('main.candidates'))
+
+
+@main.route('/result')
+def result():
+    candidates = Candidate.query.order_by(Candidate.vote_count.desc()).all()
+    max_vote_owner_id = []
+    if candidates:
+        max_vote = candidates[0].vote_count
+
+        for candidate in candidates:
+            if candidate.vote_count == max_vote:
+                max_vote_owner_id.append(candidate.id)
+
+    return render_template('result.html', candidates=candidates, max_vote_owner_id=max_vote_owner_id)
