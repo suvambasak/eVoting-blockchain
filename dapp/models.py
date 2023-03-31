@@ -30,6 +30,12 @@ class Voter(database.Model, UserMixin):
         default=False
     )
 
+    voter_status = database.Column(
+        database.Boolean,
+        nullable=False,
+        default=True
+    )
+
     def __repr__(self) -> str:
         return f'''
         Voter (
@@ -38,6 +44,7 @@ class Voter(database.Model, UserMixin):
             password: {self.password}
             wallet_address: {self.wallet_address}
             vote_status: {self.vote_status}
+            voter_status: {self.voter_status}
         )
         '''
 

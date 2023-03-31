@@ -1,12 +1,13 @@
 import hashlib
 
-from flask import Blueprint, redirect, render_template, request, url_for, flash
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import database
 from .models import Voter
-from .validator import validate_signup, validate_signin
+from .role import UserRole, is_admin
+from .validator import validate_signin, validate_signup
 
 auth = Blueprint('auth', __name__)
 
@@ -29,16 +30,19 @@ def signin_post():
     password = request.form.get('pwd').strip()
     user_type = request.form['user_type']
 
-    if user_type == 'voter':
+    roll_number_hash = hashlib.sha256(
+        bytes(roll_number, 'UTF-8')
+    ).hexdigest()
+
+    voter = Voter.query.filter_by(
+        roll_number_hash=roll_number_hash
+    ).first()
+
+    if user_type == UserRole.VOTER:
         valid, msg = validate_signin(roll_number, password)
         if not valid:
             flash(msg)
             return redirect(url_for('auth.index'))
-
-        roll_number_hash = hashlib.sha256(
-            bytes(roll_number, 'UTF-8')).hexdigest()
-        voter = Voter.query.filter_by(
-            roll_number_hash=roll_number_hash).first()
 
         if not voter:
             return redirect(url_for('auth.signup'))
@@ -50,10 +54,11 @@ def signin_post():
         login_user(voter)
 
         return redirect(url_for('main.candidates'))
-    elif user_type == 'admin':
-        return 'Admin user'
-    else:
-        return redirect(url_for('main.index'))
+
+    elif user_type == UserRole.ADMIN:
+        if check_password_hash(voter.password, password) and is_admin(voter):
+            return 'Admin user'
+        return redirect(url_for('auth.index'))
 
 
 @auth.route('/logout')

@@ -1,8 +1,11 @@
+import hashlib
+import json
 import os
 
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash
 
 
 def init_candidates(path, db, Candidate):
@@ -23,6 +26,25 @@ def init_candidates(path, db, Candidate):
         db.session.commit()
 
 
+def setup_admin(path, db, Users):
+    with open(path) as json_file:
+        admin_user_details = json.loads(json_file.read())
+        db.session.add(
+            Users(
+                roll_number_hash=hashlib.sha256(
+                    bytes(admin_user_details["user"], 'UTF-8')
+                ).hexdigest(),
+                password=generate_password_hash(
+                    admin_user_details["passwd"],
+                    method='sha256'
+                ),
+                wallet_address=admin_user_details["wallet"],
+                voter_status=False
+            )
+        )
+        db.session.commit()
+
+
 database = SQLAlchemy()
 
 
@@ -30,6 +52,7 @@ def create_app():
     WORKING_DIRECTORY = os.getcwd()
     DB_NAME = 'offchain.sqlite'
     CSV_DIR = f'{WORKING_DIRECTORY}/CSV/candidates.csv'
+    ADMIN_DIR = f'{WORKING_DIRECTORY}/admin/admin.json'
 
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'secret-key'
@@ -45,6 +68,11 @@ def create_app():
         database.create_all()
 
         if app.config['EPOCH']:
+            setup_admin(
+                ADMIN_DIR,
+                database,
+                models.Voter
+            )
             init_candidates(
                 CSV_DIR,
                 database,
