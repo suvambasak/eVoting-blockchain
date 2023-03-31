@@ -27,25 +27,33 @@ def signup():
 def signin_post():
     roll_number = request.form.get('rollno').strip()
     password = request.form.get('pwd').strip()
+    user_type = request.form['user_type']
 
-    valid, msg = validate_signin(roll_number, password)
-    if not valid:
-        flash(msg)
-        return redirect(url_for('auth.index'))
+    if user_type == 'voter':
+        valid, msg = validate_signin(roll_number, password)
+        if not valid:
+            flash(msg)
+            return redirect(url_for('auth.index'))
 
-    roll_number_hash = hashlib.sha256(bytes(roll_number, 'UTF-8')).hexdigest()
-    voter = Voter.query.filter_by(roll_number_hash=roll_number_hash).first()
+        roll_number_hash = hashlib.sha256(
+            bytes(roll_number, 'UTF-8')).hexdigest()
+        voter = Voter.query.filter_by(
+            roll_number_hash=roll_number_hash).first()
 
-    if not voter:
-        return redirect(url_for('auth.signup'))
+        if not voter:
+            return redirect(url_for('auth.signup'))
 
-    if not check_password_hash(voter.password, password):
-        return redirect(url_for('auth.index'))
+        if not check_password_hash(voter.password, password):
+            return redirect(url_for('auth.index'))
 
-    # Login code here
-    login_user(voter)
+        # Login code here
+        login_user(voter)
 
-    return redirect(url_for('main.candidates'))
+        return redirect(url_for('main.candidates'))
+    elif user_type == 'admin':
+        return 'Admin user'
+    else:
+        return redirect(url_for('main.index'))
 
 
 @auth.route('/logout')
