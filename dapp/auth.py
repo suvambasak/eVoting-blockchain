@@ -14,9 +14,13 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/')
 def index():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.candidates'))
-    return render_template('index.html')
+    if not current_user.is_authenticated:
+        return render_template('index.html')
+
+    if is_admin(current_user):
+        return redirect(url_for('admin.admin_panel'))
+
+    return redirect(url_for('main.candidates'))
 
 
 @auth.route('/signup')
@@ -57,8 +61,10 @@ def signin_post():
 
     elif user_type == UserRole.ADMIN:
         if check_password_hash(voter.password, password) and is_admin(voter):
-            return 'Admin user'
-        return redirect(url_for('auth.index'))
+            login_user(voter)
+            return redirect(url_for('admin.admin_panel'))
+
+    return render_template('error.html')
 
 
 @auth.route('/logout')
