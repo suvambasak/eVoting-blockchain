@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import database
 from .models import Voter
-from .role import UserRole, is_admin
+from .role import AccountStatus, UserRole, is_admin
 from .validator import validate_signin, validate_signup
 
 auth = Blueprint('auth', __name__)
@@ -54,9 +54,11 @@ def signin_post():
         if not check_password_hash(voter.password, password):
             return redirect(url_for('auth.index'))
 
-        # Login code here
-        login_user(voter)
+        if voter.voter_status == AccountStatus.BLOCKED:
+            flash(f'{roll_number_hash} is blocked by ADMIN')
+            return render_template('error.html', error_msg='BLOCKED')
 
+        login_user(voter)
         return redirect(url_for('main.candidates'))
 
     elif user_type == UserRole.ADMIN:

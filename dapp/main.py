@@ -1,8 +1,9 @@
-from flask import Blueprint, redirect, render_template, request, url_for, flash
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from . import database
 from .models import Candidate, Voter
+from .role import AccountStatus
 
 main = Blueprint('main', __name__)
 
@@ -14,8 +15,15 @@ def candidates():
         Candidate.id,
         Candidate.roll_number,
         Candidate.name
+    ).filter(
+        Candidate.candidate_status == AccountStatus.ACTIVE
     ).all()
-    return render_template('candidates.html', user=current_user, candidates=candidates)
+
+    return render_template(
+        'candidates.html',
+        user=current_user,
+        candidates=candidates
+    )
 
 
 @main.route('/cast_vote/<int:candidate_id>')
@@ -29,7 +37,10 @@ def cast_vote(candidate_id):
         id=candidate_id
     ).first_or_404()
 
-    return render_template('candidates_confirm.html', selected_candidate=selected_candidate)
+    return render_template(
+        'candidates_confirm.html',
+        selected_candidate=selected_candidate
+    )
 
 
 @main.route('/cast_vote/<int:candidate_id>/confirm', methods=['POST'])
@@ -37,7 +48,7 @@ def cast_vote(candidate_id):
 def cast_vote_confirm(candidate_id):
     flash('Processing')
 
-    parivate_key = request.form.get('parivate_key').strip()
+    private_key = request.form.get('private_key').strip()
 
     selected_candidate = Candidate.query.filter_by(
         id=candidate_id
@@ -66,4 +77,8 @@ def result():
             if candidate.vote_count == max_vote:
                 max_vote_owner_id.append(candidate.id)
 
-    return render_template('result.html', candidates=candidates, max_vote_owner_id=max_vote_owner_id)
+    return render_template(
+        'result.html',
+        candidates=candidates,
+        max_vote_owner_id=max_vote_owner_id
+    )
