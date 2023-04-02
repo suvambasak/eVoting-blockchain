@@ -21,13 +21,19 @@ def admin_panel():
     voters = Voter.query.filter(
         Voter.id > UserRole.ADMIN_ID
     ).all()
+    total_vote_cast = 0
+    for voter in voters:
+        if voter.vote_status:
+            total_vote_cast += 1
 
     candidates = Candidate.query.order_by(Candidate.vote_count.desc()).all()
     max_vote_owner_id = []
+    total_vote_count = 0
     if candidates:
         max_vote = candidates[0].vote_count
 
         for candidate in candidates:
+            total_vote_count += candidate.vote_count
             if candidate.vote_count == max_vote:
                 max_vote_owner_id.append(candidate.id)
 
@@ -36,7 +42,10 @@ def admin_panel():
         election_status=election.status,
         candidates=candidates,
         max_vote_owner_id=max_vote_owner_id,
-        voters=voters
+        voters=voters,
+        total_voter=len(voters),
+        total_vote_count=total_vote_count,
+        total_vote_cast=total_vote_cast
     )
 
 

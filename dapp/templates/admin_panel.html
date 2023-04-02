@@ -32,7 +32,7 @@
     <h2>
         Candidates voting status
         <a href="{{ url_for('admin.publish') }}">
-            <button class='btn btn-primary pull-right'>
+            <button class='btn btn-primary pull-right' onclick="return confirm('Are you sure?');">
                 {{ 'Rollback' if election_status else 'Publish result' }}
             </button>
         </a>
@@ -43,7 +43,12 @@
             <tr>
                 <th>Roll number</th>
                 <th>Name</th>
-                <th>Vote count</th>
+                <th>
+                    Vote count
+                    <span class="badge">
+                        {{ total_vote_count }}
+                    </span>
+                </th>
                 <th>Admin control</th>
             </tr>
         </thead>
@@ -72,7 +77,12 @@
 <hr>
 
 <div class="container">
-    <h2>Voters</h2>
+    <h2>
+        Voters
+        <span class="label label-default pull-right">
+            {{ total_vote_cast }} / {{ total_voter }}
+        </span>
+    </h2>
 
     <table class="table table-striped">
         <thead>
