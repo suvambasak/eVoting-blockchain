@@ -73,3 +73,18 @@ def block_voter(voter_id):
     )
 
     return redirect(url_for('admin.admin_panel'))
+
+
+@admin.route('/extend_time', methods=['POST'])
+@login_required
+def extend_time_post():
+    if not is_admin(current_user):
+        return redirect(url_for('auth.index'))
+
+    new_time = request.form.get('new_time').strip()
+    private_key = request.form.get('private_key').strip()
+
+    print(new_time)
+    print(private_key)
+
+    return redirect(url_for('admin.admin_panel'))

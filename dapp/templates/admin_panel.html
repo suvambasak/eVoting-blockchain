@@ -7,20 +7,23 @@
             </button>
         </a>
     </h2>
-    <div class="form-group row">
-        <div class="col-xs-3">
-            <label for="ex2">Time</label>
-            <input class="form-control" id="ex2" type="number">
+    <form method="POST" action="{{url_for('admin.extend_time_post')}}">
+        <div class="form-group row">
+            <div class="col-xs-3">
+                <label for="new_time">Time</label>
+                <input class="form-control" id="new_time" type="number" name="new_time" placeholder="Day(s)">
+            </div>
+            <div class="col-xs-7">
+                <label for="private_key">Private key</label>
+                <input class="form-control" id="private_key" type="password" name="private_key"
+                    placeholder="Admin private key">
+            </div>
+            <div class="col-xs-2">
+                <label for="update">&zwnj;</label>
+                <button type="submit" class="btn btn-default form-control" id="update">Update</button>
+            </div>
         </div>
-        <div class="col-xs-4">
-            <label for="ex3">Private key</label>
-            <input class="form-control" id="ex3" type="password">
-        </div>
-        <div class="col-xs-2">
-            <label for="update">&zwnj;</label>
-            <button type="submit" class="btn btn-default form-control" id="update">Update</button>
-        </div>
-    </div>
+    </form>
 </div>
 
 <hr>
