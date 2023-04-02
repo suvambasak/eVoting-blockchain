@@ -83,7 +83,7 @@ def block_candidate(candidate_id):
     database.session.commit()
 
     flash(
-        f"Candidate {candidate.name} ({candidate.roll_number}) is {'Unblocked' if candidate.candidate_status else 'Blocked'}"
+        f"Candidate {candidate.name} ({candidate.username}) is {'Unblocked' if candidate.candidate_status else 'Blocked'}"
     )
 
     return redirect(url_for('admin.admin_panel'))
@@ -103,7 +103,7 @@ def block_voter(voter_id):
     database.session.commit()
 
     flash(
-        f"Voter ({voter.roll_number_hash}) is {'Unblocked' if voter.voter_status else 'Blocked'}"
+        f"Voter ({voter.username_hash}) is {'Unblocked' if voter.voter_status else 'Blocked'}"
     )
 
     return redirect(url_for('admin.admin_panel'))

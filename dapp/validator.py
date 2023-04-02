@@ -2,9 +2,9 @@ from web3 import Web3
 WEB3_PROVIDER_URL = "https://goerli.infura.io/v3/53be787bc8af4d34960ad23a2e7cebfb"
 
 
-def validate_signin(roll_number, password):
-    if len(roll_number) < 5 or not roll_number.isdigit():
-        return (False, 'Invalid roll number')
+def validate_signin(username, password):
+    if len(username) < 3:
+        return (False, 'Invalid username')
 
     if not password:
         return (False, 'Invalid password')
@@ -13,13 +13,13 @@ def validate_signin(roll_number, password):
 
 
 def validate_signup(
-        roll_number,
+        username,
         wallet_address,
         password,
         confirm_password
 ):
-    if len(roll_number) < 5 or not roll_number.isdigit():
-        return (False, 'Invalid roll number')
+    if len(username) < 3:
+        return (False, 'Invalid username')
 
     w3 = Web3(Web3.HTTPProvider(WEB3_PROVIDER_URL))
     if len(wallet_address) != 42 or not w3.isAddress(wallet_address):

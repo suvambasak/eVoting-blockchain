@@ -18,7 +18,7 @@ def init_candidates(path, db, Candidate):
         for row in csv_reader:
             db.session.add(
                 Candidate(
-                    roll_number=row[0],
+                    username=row[0],
                     name=row[1]
                 )
             )
@@ -31,8 +31,8 @@ def setup_admin(path, db, Users, Election):
         admin_user_details = json.loads(json_file.read())
         db.session.add(
             Users(
-                roll_number_hash=hashlib.sha256(
-                    bytes(admin_user_details["user"], 'UTF-8')
+                username_hash=hashlib.sha256(
+                    bytes(admin_user_details["username"], 'UTF-8')
                 ).hexdigest(),
                 password=generate_password_hash(
                     admin_user_details["passwd"],

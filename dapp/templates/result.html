@@ -11,7 +11,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Roll number</th>
+            <th>Username</th>
             <th>Name</th>
             <th>Vote count</th>
         </tr>
@@ -20,7 +20,7 @@
         {% for candidate in candidates %}
 
         <tr class="{{'success' if candidate.id in max_vote_owner_id else 'active'}}">
-            <td>{{ candidate.roll_number }}</td>
+            <td>{{ candidate.username }}</td>
             <td>{{ candidate.name }}</td>
             <td>{{ candidate.vote_count }}</td>
         </tr>

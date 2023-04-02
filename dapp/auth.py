@@ -30,43 +30,39 @@ def signup():
 
 @auth.route('/signin', methods=['POST'])
 def signin_post():
-    roll_number = request.form.get('rollno').strip()
+    username = request.form.get('username').strip()
     password = request.form.get('pwd').strip()
-    user_type = request.form['user_type']
 
-    roll_number_hash = hashlib.sha256(
-        bytes(roll_number, 'UTF-8')
+    valid, msg = validate_signin(username, password)
+    if not valid:
+        flash(msg)
+        return redirect(url_for('auth.index'))
+
+    username_hash = hashlib.sha256(
+        bytes(username, 'UTF-8')
     ).hexdigest()
-
     voter = Voter.query.filter_by(
-        roll_number_hash=roll_number_hash
+        username_hash=username_hash
     ).first()
 
-    if user_type == UserRole.VOTER:
-        valid, msg = validate_signin(roll_number, password)
-        if not valid:
-            flash(msg)
-            return redirect(url_for('auth.index'))
+    if not voter:
+        flash('User not found!')
+        return redirect(url_for('auth.signup'))
 
-        if not voter:
-            return redirect(url_for('auth.signup'))
+    if not check_password_hash(voter.password, password):
+        flash('Incorrect password')
+        return redirect(url_for('auth.index'))
 
-        if not check_password_hash(voter.password, password):
-            return redirect(url_for('auth.index'))
-
-        if voter.voter_status == AccountStatus.BLOCKED:
-            flash(f'{roll_number_hash} is blocked by ADMIN')
-            return render_template('error.html', error_msg='BLOCKED')
-
+    if is_admin(voter):
         login_user(voter)
-        return redirect(url_for('main.candidates'))
+        return redirect(url_for('admin.admin_panel'))
 
-    elif user_type == UserRole.ADMIN:
-        if check_password_hash(voter.password, password) and is_admin(voter):
-            login_user(voter)
-            return redirect(url_for('admin.admin_panel'))
+    if voter.voter_status == AccountStatus.BLOCKED:
+        flash(f'{username_hash} is blocked by ADMIN')
+        return render_template('error.html', error_msg='BLOCKED')
 
-    return render_template('error.html')
+    login_user(voter)
+    return redirect(url_for('main.candidates'))
 
 
 @auth.route('/logout')
@@ -78,31 +74,34 @@ def logout():
 
 @auth.route('/signup', methods=['POST'])
 def signup_post():
-    roll_number = request.form.get('rollno').strip()
+    username = request.form.get('username').strip()
     wallet_address = request.form.get('walletaddr').strip()
     password = request.form.get('pwd').strip()
     confirm_password = request.form.get('cnf_pwd').strip()
 
     valid, msg = validate_signup(
-        roll_number,
+        username,
         wallet_address,
         password,
         confirm_password
     )
-
     if not valid:
         flash(msg)
         return redirect(url_for('auth.signup'))
 
-    roll_number_hash = hashlib.sha256(bytes(roll_number, 'UTF-8')).hexdigest()
+    if Voter.query.filter_by(wallet_address=wallet_address).all():
+        flash('Incorrect wallet address')
+        return redirect(url_for('auth.signup'))
+
+    username_hash = hashlib.sha256(bytes(username, 'UTF-8')).hexdigest()
     password_hash = generate_password_hash(password, method='sha256')
 
-    if Voter.query.filter_by(roll_number_hash=roll_number_hash).all():
+    if Voter.query.filter_by(username_hash=username_hash).all():
         flash('Already registerd voter')
     else:
         database.session.add(
             Voter(
-                roll_number_hash=roll_number_hash,
+                username_hash=username_hash,
                 password=password_hash,
                 wallet_address=wallet_address,
                 vote_status=False

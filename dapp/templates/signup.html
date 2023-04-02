@@ -10,8 +10,8 @@
 </h2>
 <form method="POST" action="{{url_for('auth.signup_post')}}">
     <div class="form-group">
-        <label for="rollno">Roll No</label>
-        <input type="text" class="form-control" id="rollno" placeholder="Enter roll number" name="rollno">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
     </div>
     <div class="form-group">
         <label for="walletaddr">Wallet address</label>
@@ -23,7 +23,7 @@
     </div>
     <div class="form-group">
         <label for="cnf_pwd">Confirm password</label>
-        <input type="password" class="form-control" id="cnf_pwd" placeholder="Enter Confirm password" name="cnf_pwd">
+        <input type="password" class="form-control" id="cnf_pwd" placeholder="Enter confirm password" name="cnf_pwd">
     </div>
     <button type="submit" class="btn btn-primary">Sign up</button>
 </form>

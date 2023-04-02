@@ -9,7 +9,7 @@ class Voter(database.Model, UserMixin):
         primary_key=True
     )
 
-    roll_number_hash = database.Column(
+    username_hash = database.Column(
         database.String(64),
         unique=True
     )
@@ -40,7 +40,7 @@ class Voter(database.Model, UserMixin):
         return f'''
         Voter (
             id: {self.id}
-            roll_number_hash: {self.roll_number_hash}
+            username_hash: {self.username}
             password: {self.password}
             wallet_address: {self.wallet_address}
             vote_status: {self.vote_status}
@@ -55,7 +55,7 @@ class Candidate(database.Model):
         primary_key=True
     )
 
-    roll_number = database.Column(
+    username = database.Column(
         database.String(64),
         unique=True
     )
@@ -80,7 +80,7 @@ class Candidate(database.Model):
         return f'''
         Candidate(
             id: {self.id}
-            roll_number: {self.roll_number}
+            username: {self.username}
             name: {self.name}
             vote_count: {self.vote_count}
             candidate_status: {self.candidate_status}

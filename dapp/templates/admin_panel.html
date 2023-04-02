@@ -41,7 +41,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Roll number</th>
+                <th>Username</th>
                 <th>Name</th>
                 <th>
                     Vote count
@@ -56,7 +56,7 @@
 
             {% for candidate in candidates %}
             <tr class="{{ 'success' if candidate.id in max_vote_owner_id else 'active' }}">
-                <td>{{ candidate.roll_number }}</td>
+                <td>{{ candidate.username }}</td>
                 <td>{{ candidate.name }}</td>
                 <td>{{ candidate.vote_count }}</td>
                 <td>
@@ -87,7 +87,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Roll number hash</th>
+                <th>Username hash</th>
                 <th>Wallter address</th>
                 <th>Vote status</th>
                 <th>Admin control</th>
@@ -96,7 +96,7 @@
         <tbody>
             {% for voter in voters %}
             <tr class="{{ 'success' if voter.vote_status else 'active' }}">
-                <td>{{ voter.roll_number_hash }}</td>
+                <td>{{ voter.username_hash }}</td>
                 <td>{{ voter.wallet_address }}</td>
                 <td>{{ 'VOTED' if voter.vote_status else 'NOT VOTED'}}</td>
                 <td>

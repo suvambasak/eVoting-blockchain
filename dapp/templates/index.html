@@ -10,20 +10,12 @@
 </h2>
 <form method="POST" action="{{url_for('auth.signin_post')}}">
     <div class="form-group">
-        <label for="rollno">Roll No</label>
-        <input type="text" class="form-control" id="rollno" placeholder="Enter roll number" name="rollno">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
     </div>
     <div class="form-group">
         <label for="pwd">Password</label>
         <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
-    </div>
-    <div class="form-group">
-        <label class="radio-inline">
-            <input type="radio" name="user_type" id="voter" value="voter" checked>Voter
-        </label>
-        <label class="radio-inline">
-            <input type="radio" name="user_type" value="admin" id="admin">Admin
-        </label>
     </div>
     <button type="submit" class="btn btn-primary">Sign in</button>
     <a href="{{url_for('auth.signup')}}"><button type="button" class="btn btn-default">Sign up</button></a>

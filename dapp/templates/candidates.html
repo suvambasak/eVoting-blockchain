@@ -12,8 +12,8 @@
     <table class="table table-hover">
         <tbody>
             <tr class="info">
-                <td>Roll number</td>
-                <td>{{ user.roll_number_hash }}</td>
+                <td>Username</td>
+                <td>{{ user.username_hash }}</td>
             </tr>
             <tr class="info">
                 <td>Wallet address</td>
@@ -32,7 +32,7 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Roll number</th>
+            <th>Username</th>
             <th>Name</th>
             <th>Cast vote</th>
         </tr>
@@ -41,7 +41,7 @@
 
         {% for candidate in candidates %}
         <tr>
-            <td>{{ candidate.roll_number }}</td>
+            <td>{{ candidate.username }}</td>
             <td>{{ candidate.name }}</td>
             <td>
                 {% if not user.vote_status %}

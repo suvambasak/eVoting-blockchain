@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 from . import database
 from .models import Candidate, Election, Voter
-from .role import AccountStatus, ElectionStatus
+from .role import AccountStatus, ElectionStatus, is_admin
 
 main = Blueprint('main', __name__)
 
@@ -11,9 +11,12 @@ main = Blueprint('main', __name__)
 @main.route('/candidates')
 @login_required
 def candidates():
+    if is_admin(current_user):
+        return redirect(url_for('auth.index'))
+
     candidates = Candidate.query.with_entities(
         Candidate.id,
-        Candidate.roll_number,
+        Candidate.username,
         Candidate.name
     ).filter(
         Candidate.candidate_status == AccountStatus.ACTIVE
@@ -29,9 +32,12 @@ def candidates():
 @main.route('/cast_vote/<int:candidate_id>')
 @login_required
 def cast_vote(candidate_id):
+    if is_admin(current_user):
+        return redirect(url_for('auth.index'))
+
     selected_candidate = Candidate.query.with_entities(
         Candidate.id,
-        Candidate.roll_number,
+        Candidate.username,
         Candidate.name
     ).filter_by(
         id=candidate_id
@@ -46,7 +52,8 @@ def cast_vote(candidate_id):
 @main.route('/cast_vote/<int:candidate_id>/confirm', methods=['POST'])
 @login_required
 def cast_vote_confirm(candidate_id):
-    flash('Processing')
+    if is_admin(current_user):
+        return redirect(url_for('auth.index'))
 
     private_key = request.form.get('private_key').strip()
 
