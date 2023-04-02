@@ -2,8 +2,8 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from . import database
-from .models import Candidate, Voter
-from .role import AccountStatus
+from .models import Candidate, Election, Voter
+from .role import AccountStatus, ElectionStatus
 
 main = Blueprint('main', __name__)
 
@@ -68,6 +68,14 @@ def cast_vote_confirm(candidate_id):
 
 @main.route('/result')
 def result():
+    election = Election.query.filter_by(
+        id=1
+    ).first_or_404()
+
+    if election.status == ElectionStatus.PRIVATE:
+        flash('The result has not been released yet')
+        return redirect(url_for('auth.index'))
+
     candidates = Candidate.query.order_by(Candidate.vote_count.desc()).all()
     max_vote_owner_id = []
     if candidates:

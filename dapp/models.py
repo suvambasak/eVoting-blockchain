@@ -78,9 +78,38 @@ class Candidate(database.Model):
 
     def __repr__(self) -> str:
         return f'''
+        Candidate(
             id: {self.id}
             roll_number: {self.roll_number}
             name: {self.name}
             vote_count: {self.vote_count}
             candidate_status: {self.candidate_status}
+        )
+        '''
+
+
+class Election(database.Model):
+    id = database.Column(
+        database.Integer,
+        primary_key=True
+    )
+
+    contract_address = database.Column(
+        database.String(42),
+        unique=True
+    )
+
+    status = database.Column(
+        database.Boolean,
+        nullable=False,
+        default=False
+    )
+
+    def __repr__(self) -> str:
+        return f'''
+        Election(
+            id: {self.id}
+            contract_address: {self.contract_address}
+            status: {self.status}
+        )
         '''

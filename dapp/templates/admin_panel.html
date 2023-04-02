@@ -7,7 +7,7 @@
             </button>
         </a>
     </h2>
-    <form method="POST" action="{{url_for('admin.extend_time_post')}}">
+    <form method="POST" action="{{ url_for('admin.extend_time_post') }}">
         <div class="form-group row">
             <div class="col-xs-3">
                 <label for="new_time">Time</label>
@@ -31,9 +31,11 @@
 <div class="container">
     <h2>
         Candidates voting status
-        <button class='btn btn-primary pull-right'>
-            Publish result
-        </button>
+        <a href="{{ url_for('admin.publish') }}">
+            <button class='btn btn-primary pull-right'>
+                {{ 'Rollback' if election_status else 'Publish result' }}
+            </button>
+        </a>
     </h2>
 
     <table class="table table-striped">
@@ -48,14 +50,14 @@
         <tbody>
 
             {% for candidate in candidates %}
-            <tr class="{{'success' if candidate.id in max_vote_owner_id else 'active'}}">
+            <tr class="{{ 'success' if candidate.id in max_vote_owner_id else 'active' }}">
                 <td>{{ candidate.roll_number }}</td>
                 <td>{{ candidate.name }}</td>
                 <td>{{ candidate.vote_count }}</td>
                 <td>
-                    <a href="{{url_for('admin.block_candidate', candidate_id=candidate.id)}}">
+                    <a href="{{ url_for('admin.block_candidate', candidate_id=candidate.id) }}">
                         <button type="button"
-                            class="btn btn-sm {{ 'btn-danger' if candidate.candidate_status else 'btn-success'}}">
+                            class="btn btn-sm {{ 'btn-danger' if candidate.candidate_status else 'btn-success' }}">
                             {{ 'Block' if candidate.candidate_status else 'Unblock'}}
                         </button>
                     </a>
@@ -83,14 +85,14 @@
         </thead>
         <tbody>
             {% for voter in voters %}
-            <tr class="{{'success' if voter.vote_status else 'active'}}">
+            <tr class="{{ 'success' if voter.vote_status else 'active' }}">
                 <td>{{ voter.roll_number_hash }}</td>
                 <td>{{ voter.wallet_address }}</td>
                 <td>{{ 'VOTED' if voter.vote_status else 'NOT VOTED'}}</td>
                 <td>
-                    <a href="{{url_for('admin.block_voter', voter_id=voter.id)}}">
+                    <a href="{{ url_for('admin.block_voter', voter_id=voter.id) }}">
                         <button type="button"
-                            class="btn btn-sm {{ 'btn-danger' if voter.voter_status else 'btn-success'}}">
+                            class="btn btn-sm {{ 'btn-danger' if voter.voter_status else 'btn-success' }}">
                             {{ 'Block' if voter.voter_status else 'Unblock'}}
                         </button>
                     </a>

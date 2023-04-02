@@ -1,9 +1,9 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from .role import UserRole, is_admin
 from . import database
-from .models import Candidate, Voter
+from .models import Candidate, Election, Voter
+from .role import ElectionStatus, UserRole, is_admin
 
 admin = Blueprint('admin', __name__)
 
@@ -13,6 +13,10 @@ admin = Blueprint('admin', __name__)
 def admin_panel():
     if not is_admin(current_user):
         return redirect(url_for('auth.index'))
+
+    election = Election.query.filter_by(
+        id=1
+    ).first_or_404()
 
     voters = Voter.query.filter(
         Voter.id > UserRole.ADMIN_ID
@@ -29,10 +33,31 @@ def admin_panel():
 
     return render_template(
         'admin_panel.html',
+        election_status=election.status,
         candidates=candidates,
         max_vote_owner_id=max_vote_owner_id,
         voters=voters
     )
+
+
+@admin.route('/publish')
+@login_required
+def publish():
+    if not is_admin(current_user):
+        return redirect(url_for('auth.index'))
+
+    election = Election.query.filter_by(
+        id=1
+    ).first_or_404()
+    election.status = not election.status
+    database.session.commit()
+
+    if election.status == ElectionStatus.PUBLIC:
+        flash('Election result is now public')
+    else:
+        flash('Election result is now private')
+
+    return redirect(url_for('admin.admin_panel'))
 
 
 @admin.route('/block_candidate/<int:candidate_id>')

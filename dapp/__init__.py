@@ -26,7 +26,7 @@ def init_candidates(path, db, Candidate):
         db.session.commit()
 
 
-def setup_admin(path, db, Users):
+def setup_admin(path, db, Users, Election):
     with open(path) as json_file:
         admin_user_details = json.loads(json_file.read())
         db.session.add(
@@ -42,6 +42,14 @@ def setup_admin(path, db, Users):
                 voter_status=False
             )
         )
+        # db.session.commit()
+
+        db.session.add(
+            Election(
+                contract_address=admin_user_details["contract_address"]
+            )
+        )
+
         db.session.commit()
 
 
@@ -71,7 +79,8 @@ def create_app():
             setup_admin(
                 ADMIN_DIR,
                 database,
-                models.Voter
+                models.Voter,
+                models.Election
             )
             init_candidates(
                 CSV_DIR,
