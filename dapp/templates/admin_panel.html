@@ -43,18 +43,23 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="success">
-                <td>22111007</td>
-                <td>Doe</td>
-                <td>3323</td>
-                <td><button type="button" class="btn btn-sm btn-danger">Block</button></td>
+
+            {% for candidate in candidates %}
+            <tr class="{{'success' if candidate.id in max_vote_owner_id else 'active'}}">
+                <td>{{ candidate.roll_number }}</td>
+                <td>{{ candidate.name }}</td>
+                <td>{{ candidate.vote_count }}</td>
+                <td>
+                    <a href="{{url_for('admin.block_candidate', candidate_id=candidate.id)}}">
+                        <button type="button"
+                            class="btn btn-sm {{ 'btn-danger' if candidate.candidate_status else 'btn-success'}}">
+                            {{ 'Block' if candidate.candidate_status else 'Unblock'}}
+                        </button>
+                    </a>
+                </td>
             </tr>
-            <tr class="active">
-                <td>22111009</td>
-                <td>Moe</td>
-                <td>1234</td>
-                <td><button type="button" class="btn btn-sm btn-danger">Block</button></td>
-            </tr>
+            {% endfor %}
+
         </tbody>
     </table>
 </div>
@@ -64,7 +69,7 @@
 <div class="container">
     <h2>Voters</h2>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Roll number hash</th>
@@ -74,18 +79,21 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918</td>
-                <td>0x57901E36BaA15822a74d2c3e92f2E10e63Fb4ea9</td>
-                <td>Yes</td>
-                <td><button type="button" class="btn btn-sm btn-danger">Block</button></td>
+            {% for voter in voters %}
+            <tr class="{{'success' if voter.vote_status else 'active'}}">
+                <td>{{ voter.roll_number_hash }}</td>
+                <td>{{ voter.wallet_address }}</td>
+                <td>{{ 'VOTED' if voter.vote_status else 'NOT VOTED'}}</td>
+                <td>
+                    <a href="{{url_for('admin.block_voter', voter_id=voter.id)}}">
+                        <button type="button"
+                            class="btn btn-sm {{ 'btn-danger' if voter.voter_status else 'btn-success'}}">
+                            {{ 'Block' if voter.voter_status else 'Unblock'}}
+                        </button>
+                    </a>
+                </td>
             </tr>
-            <tr>
-                <td>80beb04b92ffacdcaa044ee0a9ccef6ba909a165106e2adee34f0aa6dd618028</td>
-                <td>0x8d541304d68A2cDb6d3a72C9e8982C6b8810239e</td>
-                <td>No</td>
-                <td><button type="button" class="btn btn-sm btn-danger">Block</button></td>
-            </tr>
+            {% endfor %}
         </tbody>
     </table>
 

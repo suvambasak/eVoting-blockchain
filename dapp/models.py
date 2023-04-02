@@ -70,10 +70,17 @@ class Candidate(database.Model):
         default=0
     )
 
+    candidate_status = database.Column(
+        database.Boolean,
+        nullable=False,
+        default=True
+    )
+
     def __repr__(self) -> str:
         return f'''
             id: {self.id}
             roll_number: {self.roll_number}
             name: {self.name}
             vote_count: {self.vote_count}
+            candidate_status: {self.candidate_status}
         '''
