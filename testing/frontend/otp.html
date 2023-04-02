@@ -11,29 +11,30 @@
 </head>
 
 <body>
+
     <div class="jumbotron text-center">
         <h1>SC-5 eVoting G10</h1>
         <p>Online vorting system using with <b>Blockchain Technology</b></p>
     </div>
 
+
     <div class="container">
-
-        <div class="container text-center" style="width: 70%;">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <ul class="list-group">
-                {% for message in messages %}
-                <li class="list-group-item list-group-item-warning">
-                    <strong>{{ message }}</strong>
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {% endwith %}
+        <div class="container" style="width: 50%;">
+            <h2>Validate one time passcode</h2>
+            <hr>
+            <form action="">
+                <div class="form-group">
+                    <label for="otp">OTP</label>
+                    <input type="text" class="form-control" id="otp" placeholder="Enter OTP here" name="otp">
+                </div>
+                <button type="submit" class="btn btn-primary pull-right">Verify</button>
+            </form>
         </div>
-
-        {% block content %} {% endblock %}
     </div>
+
+
+
+
 </body>
 
 </html>

@@ -1,0 +1,13 @@
+{% extends "common.html" %} {% block content %}
+<div class="container" style="width: 50%;">
+    <h2>Validate one time passcode</h2>
+    <hr>
+    <form action="">
+        <div class="form-group">
+            <label for="otp">OTP</label>
+            <input type="text" class="form-control" id="otp" placeholder="Enter OTP here" name="otp">
+        </div>
+        <button type="submit" class="btn btn-primary pull-right">Verify</button>
+    </form>
+</div>
+{% endblock %}
