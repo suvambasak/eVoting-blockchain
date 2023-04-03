@@ -5,9 +5,10 @@ from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from . import database
-from .models import Voter, Otp
-from .role import AccountStatus, UserRole, is_admin
-from .validator import validate_signin, validate_signup, generate_opt
+from .mail_server import MailServer
+from .models import Otp, Voter
+from .role import AccountStatus, is_admin
+from .validator import generate_opt, validate_signin, validate_signup
 
 auth = Blueprint('auth', __name__)
 
@@ -106,6 +107,12 @@ def signup_post():
         flash('Incorrect wallet address')
         return redirect(url_for('auth.signup'))
     else:
+        otp = generate_opt(6)
+
+        mail_agent = MailServer()
+        email, _ = mail_agent.send_mail(username, otp)
+        flash(f'Enter the code sent to {email}')
+
         database.session.add(
             Voter(
                 username_hash=username_hash,
@@ -117,7 +124,7 @@ def signup_post():
         database.session.add(
             Otp(
                 username_hash=username_hash,
-                otp=generate_opt(6)
+                otp=otp
             )
         )
         database.session.commit()
