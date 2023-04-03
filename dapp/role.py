@@ -12,9 +12,3 @@ class AccountStatus:
 class ElectionStatus:
     PUBLIC = True
     PRIVATE = False
-
-
-def is_admin(user):
-    if user.id == UserRole.ADMIN_ID:
-        return True
-    return False

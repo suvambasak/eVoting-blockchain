@@ -1,9 +1,12 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from . import database
-from .models import Candidate, Election, Voter
-from .role import AccountStatus, ElectionStatus, is_admin
+from .db_operations import (add_new_vote_record, fetch_all_active_candidates,
+                            fetch_candidate_by_id,
+                            fetch_candidate_by_id_restricted, fetch_election,
+                            fetch_election_result, fetch_voter_by_id)
+from .role import ElectionStatus
+from .validator import count_max_vote_owner_id, is_admin
 
 main = Blueprint('main', __name__)
 
@@ -11,16 +14,13 @@ main = Blueprint('main', __name__)
 @main.route('/candidates')
 @login_required
 def candidates():
+    'Shows the active candidate list and voter details'
+
+    # Access deny for ADMIN
     if is_admin(current_user):
         return redirect(url_for('auth.index'))
 
-    candidates = Candidate.query.with_entities(
-        Candidate.id,
-        Candidate.username,
-        Candidate.name
-    ).filter(
-        Candidate.candidate_status == AccountStatus.ACTIVE
-    ).all()
+    candidates = fetch_all_active_candidates()
 
     return render_template(
         'candidates.html',
@@ -32,16 +32,13 @@ def candidates():
 @main.route('/cast_vote/<int:candidate_id>')
 @login_required
 def cast_vote(candidate_id):
+    'When any vote button clicked'
+
+    # Access deny for ADMIN
     if is_admin(current_user):
         return redirect(url_for('auth.index'))
 
-    selected_candidate = Candidate.query.with_entities(
-        Candidate.id,
-        Candidate.username,
-        Candidate.name
-    ).filter_by(
-        id=candidate_id
-    ).first_or_404()
+    selected_candidate = fetch_candidate_by_id_restricted(candidate_id)
 
     return render_template(
         'candidates_confirm.html',
@@ -52,45 +49,51 @@ def cast_vote(candidate_id):
 @main.route('/cast_vote/<int:candidate_id>/confirm', methods=['POST'])
 @login_required
 def cast_vote_confirm(candidate_id):
+    '''
+    Confirm the vote
+    Take the private key of the voter to sign to transaction
+    '''
+
+    # Access deny for ADMIN
     if is_admin(current_user):
         return redirect(url_for('auth.index'))
 
+    # Voter private key
     private_key = request.form.get('private_key').strip()
 
-    selected_candidate = Candidate.query.filter_by(
-        id=candidate_id
-    ).first_or_404()
+    # get candidate and voter
+    selected_candidate = fetch_candidate_by_id(candidate_id)
+    voter = fetch_voter_by_id(current_user.id)
 
-    voter = Voter.query.filter_by(
-        id=current_user.id
-    ).first_or_404()
+    # TODO:
+    # Create Tx for vote cast and publish
+    # Wait for the confirmation
+    # From the confirmation response take the Tx hash
+    # Show in flask message
 
-    voter.vote_status = True
-    selected_candidate.vote_count += 1
-    database.session.commit()
-
+    add_new_vote_record(voter, selected_candidate)
     flash('Transaction confirmed')
+
     return redirect(url_for('main.candidates'))
 
 
 @main.route('/result')
 def result():
-    election = Election.query.filter_by(
-        id=1
-    ).first_or_404()
+    'Show the election result if published'
 
+    # If not public
+    election = fetch_election()
     if election.status == ElectionStatus.PRIVATE:
         flash('The result has not been released yet')
         return redirect(url_for('auth.index'))
 
-    candidates = Candidate.query.order_by(Candidate.vote_count.desc()).all()
-    max_vote_owner_id = []
-    if candidates:
-        max_vote = candidates[0].vote_count
+    # Find the max vote count and IDs of the winners
+    candidates = fetch_election_result()
+    _, max_vote_owner_id = count_max_vote_owner_id(candidates)
 
-        for candidate in candidates:
-            if candidate.vote_count == max_vote:
-                max_vote_owner_id.append(candidate.id)
+    # TODO: Cross-check the voting result from the blockchain data
+    # Get the voting record from smart contract
+    # Check all the vote count per candidate is same
 
     return render_template(
         'result.html',

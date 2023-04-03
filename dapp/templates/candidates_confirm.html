@@ -5,7 +5,7 @@
     <div class="container">
         <h2>
             Selected candidate
-            <a href="{{url_for('auth.logout')}}">
+            <a href="{{ url_for('auth.logout') }}">
                 <button class='btn btn-danger pull-right'>
                     Logout
                 </button>
@@ -27,7 +27,7 @@
 
     <h2>Sign transaction</h2>
 
-    <form method="POST" action="{{url_for('main.cast_vote_confirm', candidate_id=selected_candidate.id)}}">
+    <form method="POST" action="{{ url_for('main.cast_vote_confirm', candidate_id=selected_candidate.id) }}">
         <div class="form-group">
             <label for="private_key">Parivate key</label>
             <input type="password" class="form-control" id="private_key" placeholder="Enter private key"

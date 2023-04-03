@@ -1,8 +1,17 @@
-from web3 import Web3
+import hashlib
 import random
 import string
 
-WEB3_PROVIDER_URL = "https://goerli.infura.io/v3/53be787bc8af4d34960ad23a2e7cebfb"
+from web3 import Web3
+
+from .credentials import WEB3_PROVIDER_URL
+from .role import UserRole
+
+
+def is_admin(user):
+    if user.id == UserRole.ADMIN_ID:
+        return True
+    return False
 
 
 def validate_signin(username, password):
@@ -41,3 +50,31 @@ def generate_opt(length):
     for _ in range(length):
         otp += random.choice(string.digits)
     return otp
+
+
+def sha256_hash(username):
+    return hashlib.sha256(
+        bytes(username, 'UTF-8')
+    ).hexdigest()
+
+
+def count_total_vote_cast(voters):
+    total_vote_cast = 0
+    for voter in voters:
+        if voter.vote_status:
+            total_vote_cast += 1
+    return total_vote_cast
+
+
+def count_max_vote_owner_id(candidates):
+    max_vote_owner_id = []
+    total_vote_count = 0
+    if candidates:
+        max_vote = candidates[0].vote_count
+
+        for candidate in candidates:
+            total_vote_count += candidate.vote_count
+            if candidate.vote_count == max_vote:
+                max_vote_owner_id.append(candidate.id)
+
+    return (total_vote_count, max_vote_owner_id)

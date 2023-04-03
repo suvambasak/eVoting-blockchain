@@ -1,7 +1,7 @@
 {% extends "common.html" %} {% block content %}
 <div class="container">
     <h2>Extend time
-        <a href="{{url_for('auth.logout')}}">
+        <a href="{{ url_for('auth.logout') }}">
             <button class='btn btn-danger pull-right'>
                 Logout
             </button>
@@ -103,7 +103,7 @@
                     <a href="{{ url_for('admin.block_voter', voter_id=voter.id) }}">
                         <button type="button"
                             class="btn btn-sm {{ 'btn-danger' if voter.voter_status else 'btn-success' }}">
-                            {{ 'Block' if voter.voter_status else 'Unblock'}}
+                            {{ 'Block' if voter.voter_status else 'Unblock' }}
                         </button>
                     </a>
                 </td>

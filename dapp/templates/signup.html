@@ -2,13 +2,13 @@
 <div class="container" style="width: 50%;">
     <h2>
         Sign up here
-        <a href="{{url_for('auth.index')}}">
+        <a href="{{ url_for('auth.index') }}">
             <button class='btn btn-default pull-right'>
                 Back
             </button>
         </a>
     </h2>
-    <form method="POST" action="{{url_for('auth.signup_post')}}">
+    <form method="POST" action="{{ url_for('auth.signup_post') }}">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">

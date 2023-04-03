@@ -1,7 +1,7 @@
 {% extends "common.html" %} {% block content %}
 
 <h2>Result
-    <a href="{{url_for('auth.index')}}">
+    <a href="{{ url_for('auth.index') }}">
         <button class='btn btn-default pull-right'>
             Back
         </button>
@@ -19,7 +19,7 @@
     <tbody>
         {% for candidate in candidates %}
 
-        <tr class="{{'success' if candidate.id in max_vote_owner_id else 'active'}}">
+        <tr class="{{ 'success' if candidate.id in max_vote_owner_id else 'active' }}">
             <td>{{ candidate.username }}</td>
             <td>{{ candidate.name }}</td>
             <td>{{ candidate.vote_count }}</td>

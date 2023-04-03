@@ -8,7 +8,7 @@
             </button>
         </a>
     </h2>
-    <form method="POST" action="{{url_for('auth.signin_post')}}">
+    <form method="POST" action="{{ url_for('auth.signin_post') }}">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
@@ -18,7 +18,7 @@
             <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
         </div>
         <div class="pull-right">
-            <a href="{{url_for('auth.signup')}}"><button type="button" class="btn btn-default">Sign up</button></a>
+            <a href="{{ url_for('auth.signup') }}"><button type="button" class="btn btn-default">Sign up</button></a>
             <button type="submit" class="btn btn-primary">Sign in</button>
         </div>
 
