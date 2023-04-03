@@ -3,6 +3,33 @@ from flask_login import UserMixin
 from . import database
 
 
+class Otp(database.Model):
+    id = database.Column(
+        database.Integer,
+        primary_key=True
+    )
+
+    username_hash = database.Column(
+        database.String(64),
+        unique=True,
+        nullable=False
+    )
+
+    otp = database.Column(
+        database.String(6),
+        nullable=False
+    )
+
+    def __repr__(self) -> str:
+        return f'''
+        OTPs (
+            id: {self.id}
+            username_hash: {self.username_hash}
+            otp: {self.otp}
+        )
+        '''
+
+
 class Voter(database.Model, UserMixin):
     id = database.Column(
         database.Integer,
@@ -11,7 +38,8 @@ class Voter(database.Model, UserMixin):
 
     username_hash = database.Column(
         database.String(64),
-        unique=True
+        unique=True,
+        nullable=False
     )
 
     password = database.Column(
@@ -21,7 +49,8 @@ class Voter(database.Model, UserMixin):
 
     wallet_address = database.Column(
         database.String(42),
-        unique=True
+        unique=True,
+        nullable=False
     )
 
     vote_status = database.Column(
@@ -40,7 +69,7 @@ class Voter(database.Model, UserMixin):
         return f'''
         Voter (
             id: {self.id}
-            username_hash: {self.username}
+            username_hash: {self.username_hash}
             password: {self.password}
             wallet_address: {self.wallet_address}
             vote_status: {self.vote_status}

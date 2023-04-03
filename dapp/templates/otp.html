@@ -2,7 +2,7 @@
 <div class="container" style="width: 50%;">
     <h2>Validate one time passcode</h2>
     <hr>
-    <form action="">
+    <form method="POST" action="{{ url_for('auth.verify_otp_post', username_hash=username_hash) }}">
         <div class="form-group">
             <label for="otp">OTP</label>
             <input type="text" class="form-control" id="otp" placeholder="Enter OTP here" name="otp">

@@ -1,4 +1,7 @@
 from web3 import Web3
+import random
+import string
+
 WEB3_PROVIDER_URL = "https://goerli.infura.io/v3/53be787bc8af4d34960ad23a2e7cebfb"
 
 
@@ -31,3 +34,10 @@ def validate_signup(
         return (False, 'Confirm password does not match')
 
     return (True, '')
+
+
+def generate_opt(length):
+    otp = ''
+    for _ in range(length):
+        otp += random.choice(string.digits)
+    return otp
