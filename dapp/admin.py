@@ -1,3 +1,6 @@
+import time
+from datetime import datetime
+
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
@@ -117,10 +120,17 @@ def update_time_post():
     end_time = request.form.get('end_time').strip()
     private_key = request.form.get('private_key').strip()
 
+    # Convert time to unix timestamp
+    _start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M')
+    _end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M')
+    unix_start_time = int(time.mktime(_start_time.timetuple()))
+    unix_end_time = int(time.mktime(_end_time.timetuple()))
+
+    print(start_time, unix_start_time)
+    print(end_time, unix_end_time)
+    print(private_key)
+
     # TODO: Update the end time in smart contract
     # Sign the Tx using the private key of ADMIN
-    print(start_time)
-    print(end_time)
-    print(private_key)
 
     return redirect(url_for('admin.admin_panel'))
