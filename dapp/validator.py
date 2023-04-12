@@ -66,6 +66,18 @@ def count_total_vote_cast(voters):
     return total_vote_cast
 
 
+def validate_result_hash(voters, hash_from_blockchain):
+    hash_concat = ''
+    vote_cast_nonce = 0
+    for voter in voters:
+        hash_concat += voter.username_hash
+        vote_cast_nonce += voter.id
+
+    result_hash = sha256_hash(hash_concat+str(vote_cast_nonce))
+    print(f'   result_hash: {result_hash}')
+    return (result_hash == hash_from_blockchain)
+
+
 def build_vote_cast_hash(
         selected_candidate,
         current_voter,

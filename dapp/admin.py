@@ -3,9 +3,11 @@ from flask_login import current_user, login_required
 
 from .db_operations import (ban_candidate_by_id, ban_voter_by_id,
                             fetch_all_voters, fetch_election,
-                            fetch_election_result, publish_result)
+                            fetch_election_result,
+                            fetch_voters_by_candidate_id, publish_result)
 from .role import ElectionStatus
-from .validator import count_max_vote_owner_id, count_total_vote_cast, is_admin
+from .validator import (count_max_vote_owner_id, count_total_vote_cast,
+                        is_admin, validate_result_hash)
 
 admin = Blueprint('admin', __name__)
 
@@ -49,6 +51,14 @@ def publish():
     # Access deny for other
     if not is_admin(current_user):
         return redirect(url_for('auth.index'))
+
+    candidates = fetch_election_result()
+    for candidate in candidates:
+        voters = fetch_voters_by_candidate_id(candidate.id)
+        if candidate.vote_count != len(voters):
+            return 'Error'
+
+        print(validate_result_hash(voters, 'hash'))
 
     election = publish_result()
 
