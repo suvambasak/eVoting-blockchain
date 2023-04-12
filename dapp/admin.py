@@ -103,9 +103,9 @@ def block_voter(voter_id):
     return redirect(url_for('admin.admin_panel'))
 
 
-@admin.route('/extend_time', methods=['POST'])
+@admin.route('/update_time', methods=['POST'])
 @login_required
-def extend_time_post():
+def update_time_post():
     'Extend the end time of the election'
 
     # Access deny for other
@@ -113,12 +113,14 @@ def extend_time_post():
         return redirect(url_for('auth.index'))
 
     # Get new time and private key input
-    new_time = request.form.get('new_time').strip()
+    start_time = request.form.get('start_time').strip()
+    end_time = request.form.get('end_time').strip()
     private_key = request.form.get('private_key').strip()
 
     # TODO: Update the end time in smart contract
     # Sign the Tx using the private key of ADMIN
-    print(new_time)
+    print(start_time)
+    print(end_time)
     print(private_key)
 
     return redirect(url_for('admin.admin_panel'))
