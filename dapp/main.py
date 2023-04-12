@@ -4,9 +4,10 @@ from flask_login import current_user, login_required
 from .db_operations import (add_new_vote_record, fetch_all_active_candidates,
                             fetch_candidate_by_id,
                             fetch_candidate_by_id_restricted, fetch_election,
-                            fetch_election_result, fetch_voter_by_id)
+                            fetch_election_result, fetch_voter_by_id,
+                            fetch_voters_by_candidate_id)
 from .role import ElectionStatus
-from .validator import count_max_vote_owner_id, is_admin
+from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin
 
 main = Blueprint('main', __name__)
 
@@ -61,9 +62,21 @@ def cast_vote_confirm(candidate_id):
     # Voter private key
     private_key = request.form.get('private_key').strip()
 
-    # get candidate and voter
+    # Get candidate and voter
     selected_candidate = fetch_candidate_by_id(candidate_id)
     voter = fetch_voter_by_id(current_user.id)
+
+    # Generate hash
+    candidate_hash, vote_hash = build_vote_cast_hash(
+        selected_candidate,
+        voter,
+        fetch_voters_by_candidate_id(selected_candidate.id)
+    )
+
+    print(f'''
+        candidate hash: {candidate_hash}
+        vote_hash: {vote_hash}
+    ''')
 
     # TODO:
     # Create Tx for vote cast and publish

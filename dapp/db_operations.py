@@ -11,6 +11,12 @@ def fetch_election():
     ).first()
 
 
+def fetch_voters_by_candidate_id(candidate_id):
+    return Voter.query.filter_by(
+        vote_status=candidate_id
+    ).order_by(Voter.id).all()
+
+
 def fetch_election_result():
     return Candidate.query.order_by(Candidate.vote_count.desc()).all()
 
@@ -110,7 +116,7 @@ def is_wallet_address_already_exists(wallet_address):
 
 
 def add_new_vote_record(voter, candidate):
-    voter.vote_status = True
+    voter.vote_status = candidate.id
     candidate.vote_count += 1
     database.session.commit()
 

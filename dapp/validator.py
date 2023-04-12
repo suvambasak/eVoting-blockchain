@@ -66,6 +66,39 @@ def count_total_vote_cast(voters):
     return total_vote_cast
 
 
+def build_vote_cast_hash(
+        selected_candidate,
+        current_voter,
+        voters_by_selected_candidate
+):
+
+    # If first voter
+    if not voters_by_selected_candidate:
+        return (
+            sha256_hash(selected_candidate.username),
+            sha256_hash(current_voter.username_hash+str(current_voter.id))
+        )
+
+    hash_concat = ''
+    vote_cast_nonce = 0
+
+    flag = True
+    for voter in voters_by_selected_candidate:
+        if flag and current_voter.id < voter.id:
+            print(current_voter)
+            flag = False
+            hash_concat += current_voter.username_hash
+            vote_cast_nonce += current_voter.id
+
+        hash_concat += voter.username_hash
+        vote_cast_nonce += voter.id
+
+    return (
+        sha256_hash(selected_candidate.username),
+        sha256_hash(hash_concat+str(vote_cast_nonce))
+    )
+
+
 def count_max_vote_owner_id(candidates):
     max_vote_owner_id = []
     total_vote_count = 0

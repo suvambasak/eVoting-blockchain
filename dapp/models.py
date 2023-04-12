@@ -54,9 +54,9 @@ class Voter(database.Model, UserMixin):
     )
 
     vote_status = database.Column(
-        database.Boolean,
+        database.Integer,
         nullable=False,
-        default=False
+        default=0
     )
 
     voter_status = database.Column(
