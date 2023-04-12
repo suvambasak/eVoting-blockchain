@@ -21,7 +21,7 @@ with open('admin/admin.json') as json_file:
     admin_details = json.loads(json_file.read())
     admin_wallet = admin_details['wallet']
 sys.stdout.write(f'\r Reading contract...               ')
-with open('contract/mysol2.sol', 'r') as contract_file:
+with open('contract/eVote.sol', 'r') as contract_file:
     contract = contract_file.read()
 
 
