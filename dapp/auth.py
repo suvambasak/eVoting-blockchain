@@ -134,7 +134,7 @@ def signup_post():
     # New voter adding
     else:
         otp = generate_opt(6)
-        print(otp)
+        print(f'OTP: {otp}')
 
         if EMAIL_SERVICE:
             mail_agent = MailServer()
@@ -145,7 +145,7 @@ def signup_post():
             username_hash,
             password_hash,
             wallet_address,
-            otp
+            generate_password_hash(otp, method='sha256')
         )
 
         return render_template('otp.html', username_hash=username_hash)
@@ -165,7 +165,7 @@ def verify_otp_post(username_hash):
         return redirect(url_for('auth.index'))
 
     # OTP match
-    if otp.otp == user_otp:
+    if check_password_hash(otp.otp, user_otp):
         delete_OTP(otp)
 
         flash('Voter registration complete')

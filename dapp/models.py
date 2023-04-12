@@ -16,7 +16,7 @@ class Otp(database.Model):
     )
 
     otp = database.Column(
-        database.String(6),
+        database.String(88),
         nullable=False
     )
 
