@@ -3,13 +3,14 @@ from flask_login import current_user, login_required
 
 from .db_operations import (add_new_vote_record, fetch_all_active_candidates,
                             fetch_candidate_by_id,
-                            fetch_candidate_by_id_restricted, fetch_election,
+                            fetch_candidate_by_id_restricted,
+                            fetch_contract_address, fetch_election,
                             fetch_election_result, fetch_voter_by_id,
-                            fetch_voters_by_candidate_id, fetch_contract_address)
+                            fetch_voters_by_candidate_id)
+from .ethereum import Blockchain
 from .role import ElectionStatus
 from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin
 
-from .ethereum import Blockchain
 main = Blueprint('main', __name__)
 
 
@@ -79,13 +80,8 @@ def cast_vote_confirm(candidate_id):
         vote_hash: {vote_hash}
     ''')
 
-    # TODO:
-    # Create Tx for vote cast and publish
-    # Wait for the confirmation
-    # From the confirmation response take the Tx hash
-    # Show in flask message
-    contract_address = fetch_contract_address()
-    blockchain = Blockchain(voter.wallet_address, contract_address)
+    # Sending transaction for vote cast
+    blockchain = Blockchain(voter.wallet_address, fetch_contract_address())
     status, tx_msg = blockchain.vote(private_key, candidate_hash, vote_hash)
 
     if status:
@@ -110,10 +106,6 @@ def result():
     # Find the max vote count and IDs of the winners
     candidates = fetch_election_result()
     _, max_vote_owner_id = count_max_vote_owner_id(candidates)
-
-    # TODO: Cross-check the voting result from the blockchain data
-    # Get the voting record from smart contract
-    # Check all the vote count per candidate is same
 
     return render_template(
         'result.html',

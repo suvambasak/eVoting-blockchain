@@ -7,6 +7,7 @@ from .db_operations import (ban_candidate_by_id, ban_voter_by_id,
                             fetch_admin_wallet_address, fetch_all_voters,
                             fetch_contract_address, fetch_election,
                             fetch_election_result,
+                            fetch_election_result_restricted,
                             fetch_voters_by_candidate_id, publish_result)
 from .ethereum import Blockchain
 from .role import ElectionStatus
@@ -29,7 +30,7 @@ def admin_panel():
     # Fetch all information
     election = fetch_election()
     voters = fetch_all_voters()
-    candidates = fetch_election_result()
+    candidates = fetch_election_result_restricted()
 
     # How many voted
     total_vote_cast = count_total_vote_cast(voters)

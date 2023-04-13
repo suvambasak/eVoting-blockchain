@@ -32,6 +32,12 @@ def fetch_voters_by_candidate_id(candidate_id):
 
 
 def fetch_election_result():
+    return Candidate.query.filter_by(
+        candidate_status=AccountStatus.ACTIVE
+    ).order_by(Candidate.vote_count.desc()).all()
+
+
+def fetch_election_result_restricted():
     return Candidate.query.order_by(Candidate.vote_count.desc()).all()
 
 
