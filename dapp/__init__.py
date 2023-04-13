@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import json
 import os
@@ -9,8 +10,6 @@ from werkzeug.security import generate_password_hash
 
 
 def init_candidates(path, db, Candidate):
-    import csv
-
     with open(path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         next(csv_reader)
@@ -22,7 +21,6 @@ def init_candidates(path, db, Candidate):
                     name=row[1]
                 )
             )
-
         db.session.commit()
 
 
@@ -42,14 +40,11 @@ def setup_admin(path, db, Users, Election):
                 voter_status=False
             )
         )
-        # db.session.commit()
-
         db.session.add(
             Election(
                 contract_address=admin_user_details["contract_address"]
             )
         )
-
         db.session.commit()
 
 

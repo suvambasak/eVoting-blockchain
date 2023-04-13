@@ -1,19 +1,23 @@
 {% extends "common.html" %} {% block content %}
 <div class="container">
-    <h2>Extend time
+    <h2>Set manager
         <a href="{{ url_for('auth.logout') }}">
             <button class='btn btn-danger pull-right'>
                 Logout
             </button>
         </a>
     </h2>
-    <form method="POST" action="{{ url_for('admin.extend_time_post') }}">
+    <form method="POST" action="{{ url_for('admin.update_time_post') }}">
         <div class="form-group row">
             <div class="col-xs-3">
-                <label for="new_time">Time</label>
-                <input class="form-control" id="new_time" type="number" name="new_time" placeholder="Day(s)">
+                <label for="start_time">Start time</label>
+                <input class="form-control" id="start_time" type="datetime-local" name="start_time">
             </div>
-            <div class="col-xs-7">
+            <div class="col-xs-3">
+                <label for="end_time">End time</label>
+                <input class="form-control" id="end_time" type="datetime-local" name="end_time">
+            </div>
+            <div class="col-xs-4">
                 <label for="private_key">Private key</label>
                 <input class="form-control" id="private_key" type="password" name="private_key"
                     placeholder="Admin private key">

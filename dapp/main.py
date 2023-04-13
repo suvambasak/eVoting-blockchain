@@ -3,10 +3,13 @@ from flask_login import current_user, login_required
 
 from .db_operations import (add_new_vote_record, fetch_all_active_candidates,
                             fetch_candidate_by_id,
-                            fetch_candidate_by_id_restricted, fetch_election,
-                            fetch_election_result, fetch_voter_by_id)
+                            fetch_candidate_by_id_restricted,
+                            fetch_contract_address, fetch_election,
+                            fetch_election_result, fetch_voter_by_id,
+                            fetch_voters_by_candidate_id)
+from .ethereum import Blockchain
 from .role import ElectionStatus
-from .validator import count_max_vote_owner_id, is_admin
+from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin
 
 main = Blueprint('main', __name__)
 
@@ -61,18 +64,31 @@ def cast_vote_confirm(candidate_id):
     # Voter private key
     private_key = request.form.get('private_key').strip()
 
-    # get candidate and voter
+    # Get candidate and voter
     selected_candidate = fetch_candidate_by_id(candidate_id)
     voter = fetch_voter_by_id(current_user.id)
 
-    # TODO:
-    # Create Tx for vote cast and publish
-    # Wait for the confirmation
-    # From the confirmation response take the Tx hash
-    # Show in flask message
+    # Generate hash
+    candidate_hash, vote_hash = build_vote_cast_hash(
+        selected_candidate,
+        voter,
+        fetch_voters_by_candidate_id(selected_candidate.id)
+    )
 
-    add_new_vote_record(voter, selected_candidate)
-    flash('Transaction confirmed')
+    print(f'''
+        candidate hash: {candidate_hash}
+        vote_hash: {vote_hash}
+    ''')
+
+    # Sending transaction for vote cast
+    blockchain = Blockchain(voter.wallet_address, fetch_contract_address())
+    status, tx_msg = blockchain.vote(private_key, candidate_hash, vote_hash)
+
+    if status:
+        flash(f'Transaction confirmed: {tx_msg}')
+        add_new_vote_record(voter, selected_candidate)
+    else:
+        flash(f'Transaction failed: {tx_msg}')
 
     return redirect(url_for('main.candidates'))
 
@@ -90,10 +106,6 @@ def result():
     # Find the max vote count and IDs of the winners
     candidates = fetch_election_result()
     _, max_vote_owner_id = count_max_vote_owner_id(candidates)
-
-    # TODO: Cross-check the voting result from the blockchain data
-    # Get the voting record from smart contract
-    # Check all the vote count per candidate is same
 
     return render_template(
         'result.html',

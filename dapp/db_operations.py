@@ -5,13 +5,39 @@ from .role import AccountStatus, UserRole
 # Retrieve section
 
 
+def fetch_contract_address():
+    election = Election.query.filter_by(
+        id=1
+    ).first()
+    return election.contract_address
+
+
+def fetch_admin_wallet_address():
+    admin = Voter.query.filter_by(
+        id=UserRole.ADMIN_ID
+    ).first()
+    return admin.wallet_address
+
+
 def fetch_election():
     return Election.query.filter_by(
         id=1
     ).first()
 
 
+def fetch_voters_by_candidate_id(candidate_id):
+    return Voter.query.filter_by(
+        vote_status=candidate_id
+    ).order_by(Voter.id).all()
+
+
 def fetch_election_result():
+    return Candidate.query.filter_by(
+        candidate_status=AccountStatus.ACTIVE
+    ).order_by(Candidate.vote_count.desc()).all()
+
+
+def fetch_election_result_restricted():
     return Candidate.query.order_by(Candidate.vote_count.desc()).all()
 
 
@@ -110,7 +136,7 @@ def is_wallet_address_already_exists(wallet_address):
 
 
 def add_new_vote_record(voter, candidate):
-    voter.vote_status = True
+    voter.vote_status = candidate.id
     candidate.vote_count += 1
     database.session.commit()
 

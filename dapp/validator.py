@@ -1,6 +1,8 @@
 import hashlib
 import random
 import string
+import time
+from datetime import datetime
 
 from web3 import Web3
 
@@ -66,6 +68,60 @@ def count_total_vote_cast(voters):
     return total_vote_cast
 
 
+def validate_result_hash(voters, hash_from_blockchain):
+    if not voters:
+        blank_hash = '0000000000000000000000000000000000000000000000000000000000000000'
+        return hash_from_blockchain == blank_hash
+
+    hash_concat = ''
+    vote_cast_nonce = 0
+    for voter in voters:
+        hash_concat += voter.username_hash
+        vote_cast_nonce += voter.id
+
+    result_hash = sha256_hash(hash_concat+str(vote_cast_nonce))
+    print(f'   result_hash: {result_hash} ')
+    print(f'   blockchain_hash: {hash_from_blockchain} ')
+    return (result_hash == hash_from_blockchain)
+
+
+def build_vote_cast_hash(
+        selected_candidate,
+        current_voter,
+        voters_by_selected_candidate
+):
+
+    # If first voter
+    if not voters_by_selected_candidate:
+        return (
+            sha256_hash(selected_candidate.username),
+            sha256_hash(current_voter.username_hash+str(current_voter.id))
+        )
+
+    hash_concat = ''
+    vote_cast_nonce = 0
+
+    flag = True
+    for voter in voters_by_selected_candidate:
+        if flag and current_voter.id < voter.id:
+            print(current_voter)
+            flag = False
+            hash_concat += current_voter.username_hash
+            vote_cast_nonce += current_voter.id
+        print(voter)
+        hash_concat += voter.username_hash
+        vote_cast_nonce += voter.id
+
+    if flag:
+        hash_concat += current_voter.username_hash
+        vote_cast_nonce += current_voter.id
+
+    return (
+        sha256_hash(selected_candidate.username),
+        sha256_hash(hash_concat+str(vote_cast_nonce))
+    )
+
+
 def count_max_vote_owner_id(candidates):
     max_vote_owner_id = []
     total_vote_count = 0
@@ -78,3 +134,8 @@ def count_max_vote_owner_id(candidates):
                 max_vote_owner_id.append(candidate.id)
 
     return (total_vote_count, max_vote_owner_id)
+
+
+def convert_to_unix_timestamp(timestamp_value):
+    timestamp_value_obj = datetime.strptime(timestamp_value, '%Y-%m-%dT%H:%M')
+    return int(time.mktime(timestamp_value_obj.timetuple()))
