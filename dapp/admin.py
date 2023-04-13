@@ -7,10 +7,13 @@ from flask_login import current_user, login_required
 from .db_operations import (ban_candidate_by_id, ban_voter_by_id,
                             fetch_all_voters, fetch_election,
                             fetch_election_result,
-                            fetch_voters_by_candidate_id, publish_result)
+                            fetch_voters_by_candidate_id, publish_result, fetch_contract_address, fetch_admin_wallet_address)
 from .role import ElectionStatus
 from .validator import (count_max_vote_owner_id, count_total_vote_cast,
                         is_admin, validate_result_hash)
+
+
+from .ethereum import Blockchain
 
 admin = Blueprint('admin', __name__)
 
@@ -120,17 +123,38 @@ def update_time_post():
     end_time = request.form.get('end_time').strip()
     private_key = request.form.get('private_key').strip()
 
-    # Convert time to unix timestamp
-    _start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M')
-    _end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M')
-    unix_start_time = int(time.mktime(_start_time.timetuple()))
-    unix_end_time = int(time.mktime(_end_time.timetuple()))
+    if not private_key:
+        flash('Private key empty')
 
-    print(start_time, unix_start_time)
-    print(end_time, unix_end_time)
-    print(private_key)
+    elif start_time and end_time:
+        # Convert time to unix timestamp
+        _start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M')
+        _end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M')
+        unix_start_time = int(time.mktime(_start_time.timetuple()))
+        unix_end_time = int(time.mktime(_end_time.timetuple()))
 
-    # TODO: Update the end time in smart contract
-    # Sign the Tx using the private key of ADMIN
+        print(start_time, unix_start_time)
+        print(end_time, unix_end_time)
+        print(private_key)
+
+        contract_address = fetch_contract_address()
+        print(contract_address)
+        admin_wallet_address = fetch_admin_wallet_address()
+        print(admin_wallet_address)
+
+        # # TODO: Update the end time in smart contract
+        # # Sign the Tx using the private key of ADMIN
+        blockchain = Blockchain(admin_wallet_address, contract_address)
+        status, tx_msg = blockchain.set_voting_time(
+            private_key, unix_start_time, unix_end_time)
+
+        if status:
+            flash(f'[Updated] Tx HASH: {tx_msg}')
+        else:
+            flash(f'[Failed] Tx HASH: {tx_msg}')
+
+    elif end_time:
+        flash('Extend time not ready yet!')
+        # flash(f'[Updated] Tx HASH: {tx_msg}')
 
     return redirect(url_for('admin.admin_panel'))

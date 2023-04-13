@@ -5,6 +5,20 @@ from .role import AccountStatus, UserRole
 # Retrieve section
 
 
+def fetch_contract_address():
+    election = Election.query.filter_by(
+        id=1
+    ).first()
+    return election.contract_address
+
+
+def fetch_admin_wallet_address():
+    admin = Voter.query.filter_by(
+        id=UserRole.ADMIN_ID
+    ).first()
+    return admin.wallet_address
+
+
 def fetch_election():
     return Election.query.filter_by(
         id=1
