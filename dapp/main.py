@@ -5,10 +5,11 @@ from .db_operations import (add_new_vote_record, fetch_all_active_candidates,
                             fetch_candidate_by_id,
                             fetch_candidate_by_id_restricted, fetch_election,
                             fetch_election_result, fetch_voter_by_id,
-                            fetch_voters_by_candidate_id)
+                            fetch_voters_by_candidate_id, fetch_contract_address)
 from .role import ElectionStatus
 from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin
 
+from .ethereum import Blockchain
 main = Blueprint('main', __name__)
 
 
@@ -83,9 +84,15 @@ def cast_vote_confirm(candidate_id):
     # Wait for the confirmation
     # From the confirmation response take the Tx hash
     # Show in flask message
+    contract_address = fetch_contract_address()
+    blockchain = Blockchain(voter.wallet_address, contract_address)
+    status, tx_msg = blockchain.vote(private_key, candidate_hash, vote_hash)
 
-    add_new_vote_record(voter, selected_candidate)
-    flash('Transaction confirmed')
+    if status:
+        flash(f'Transaction confirmed: {tx_msg}')
+        add_new_vote_record(voter, selected_candidate)
+    else:
+        flash(f'Transaction failed: {tx_msg}')
 
     return redirect(url_for('main.candidates'))
 

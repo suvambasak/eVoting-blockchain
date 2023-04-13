@@ -101,9 +101,13 @@ def build_vote_cast_hash(
             flag = False
             hash_concat += current_voter.username_hash
             vote_cast_nonce += current_voter.id
-
+        print(voter)
         hash_concat += voter.username_hash
         vote_cast_nonce += voter.id
+
+    if flag:
+        hash_concat += current_voter.username_hash
+        vote_cast_nonce += current_voter.id
 
     return (
         sha256_hash(selected_candidate.username),
