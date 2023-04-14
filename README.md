@@ -2,12 +2,27 @@
 eVoting system using the Ethereum blockchain  <br>
 **Group**: 10 <br>
 **Project code**: SC5
-| Tech Stack |  |
+| Tech Stack ||
 | --- |:---:|
 | Front-end | [HTML](https://html.com/), [Bootstrap](https://getbootstrap.com/) |
 | Back-end | [Flask](https://flask.palletsprojects.com/en/2.2.x/), [web3.py](https://web3py.readthedocs.io/en/stable/) |
+| Blockchain | [Ethereum](https://ethereum.org/en/) (Sepolia) |
 | API | [Infura](https://www.infura.io/) |
 | Wallet | [MetaMask](https://metamask.io/) |
+
+# Table of Contents
+ - [File details](#file-details)
+ - [How to start the application](#how-to-start-the-application)
+    - [Add credentials](#add-credentials)
+    - [Create virtual environment](#create-virtual-environment)
+    - [Install dependencies](#install-dependencies)
+    - [Deploy smart contract](#deploy-smart-contract)
+    - [Start Flask application](#start-flask-application)
+ - [How to get the private key](#how-to-get-the-private-key)
+ - [Project requirements](/docs/PDF/SC5%20Blockchain%20based%20Voting%20System.pdf)
+ - [Project report]()
+ - [Project presentation]()
+ - [Demo](#demo)
 
 
 # File details
