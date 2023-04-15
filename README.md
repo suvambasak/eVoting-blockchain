@@ -20,8 +20,9 @@ eVoting system using the Ethereum blockchain  <br>
     - [Start Flask application](#start-flask-application)
  - [How to get the private key](#how-to-get-the-private-key)
  - [Project requirements](/docs/PDF/SC5%20Blockchain%20based%20Voting%20System.pdf)
- - [Project report]()
+ - [Project report](/docs/PDF/CS731Report10.pdf)
  - [Project presentation]()
+ - [Meeting log](/docs/meeting_log.md) 
  - [Demo](#demo)
 
 
@@ -35,7 +36,11 @@ eVoting system using the Ethereum blockchain  <br>
 
 # How to start the application
 - Add the list of [candidates](CSV/candidates.csv)
-- Set admin [credentials]((admin/admin.json))
+- Set admin [credentials](admin/admin.json)
+Add your wallet address
+```json
+ "wallet": "YOUR_WALLET_ADDRESS"
+```
 
 ## Add credentials
 
@@ -50,6 +55,8 @@ To disable email service. OTP will be available in the terminal.
 ```python
 EMAIL_SERVICE = False
 ```
+## Add admin details
+
 
 Add `Infura` API
 ```python
@@ -102,6 +109,10 @@ For LAN
 ```bash
 flask run --host=0.0.0.0
 ```
+
+## Note: 
+1. **Login as Admin and set election start and end time before voting. Otherwise it will fail to cast vote.**
+2. **Publish the vote from the Admin panel to make the voting result available public.**
 
 # How to get the private key
 1. Goto MetaMask
