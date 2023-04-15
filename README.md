@@ -117,22 +117,22 @@ flask run --host=0.0.0.0
 -----
 ### Voter registration
 <center>
-<img title="Voter registration" alt="Voter registration" width="500" src="docs/gif/signup.gif">
+<img title="Voter registration" alt="Voter registration" src="docs/gif/signup.gif">
 </center>
 
 ### Voting
 <center>
-<img title="Voter registration" alt="Voter registration" width="500" src="docs/gif/vote_cast.gif">
+<img title="Voter registration" alt="Voter registration" src="docs/gif/vote_cast.gif">
 </center>
 
 ## Admin
 ---
 ### Set election time
 <center>
-<img title="Voter registration" alt="Voter registration" width="500" src="docs/gif/set_election_time.gif">
+<img title="Voter registration" alt="Voter registration" src="docs/gif/set_election_time.gif">
 </center>
 
 ### Publish election result
 <center>
-<img title="Voter registration" alt="Voter registration" width="500" src="docs/gif/admin_publish.gif">
+<img title="Voter registration" alt="Voter registration" src="docs/gif/admin_publish.gif">
 </center>
