@@ -21,7 +21,7 @@ eVoting system using the Ethereum blockchain  <br>
  - [How to get the private key](#how-to-get-the-private-key)
  - [Project requirements](/docs/PDF/SC5%20Blockchain%20based%20Voting%20System.pdf)
  - [Project report](/docs/PDF/CS731Report10.pdf)
- - [Project presentation]()
+ - [Contributors](#contributors)
  - [Meeting log](/docs/meeting_log.md) 
  - [Demo](#demo)
 
@@ -147,3 +147,9 @@ flask run --host=0.0.0.0
 <center>
 <img title="Voter registration" alt="Voter registration" src="docs/gif/admin_publish.gif">
 </center>
+
+## Contributors
+- Chandra Sekhar Kondeti - chandrask22@iitk.ac.in
+- Hrishav Raj - hrishavr22@iitk.ac.in
+- Suvam Basak - suvambasak22@iitk.ac.in
+- Major Navneet Sharma - navneets22@iitk.ac.in
