@@ -37,6 +37,7 @@ class Blockchain:
     def set_voting_time(self, private_key, start_unix_time, end_unix_time):
         'Set election voting time in contract'
         print(" [set_voting_time] Building transaction...")
+        print(f" [set_voting_time] start_unix_time: {start_unix_time} ({datetime.isoformat()})")
 
         try:
             tx = self._contract_instance.functions.setVotingTime(
