@@ -1,6 +1,8 @@
 import json
 import os
 
+from datetime import datetime, timezone
+
 from web3 import Web3
 
 from .credentials import WEB3_PROVIDER_URL
@@ -22,6 +24,7 @@ class Blockchain:
             abi=self._ABI,
             address=self._contract_address
         )
+
 
     def _read_ABI(self):
         with open(self._ABI_DIR) as ABI_file:
@@ -130,3 +133,8 @@ class Blockchain:
         )
 
         return vote_hash.hex()
+
+    def print_current_block_timestamp(self):
+        timestamp = self._contract_instance.functions.getCurrentTimestamp().call()
+        dt = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+        print(f"Current contract block.timestamp: {timestamp} ({dt.isoformat()})")
