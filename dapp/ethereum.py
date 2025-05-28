@@ -69,7 +69,7 @@ class Blockchain:
         start_unix_time_utc = self.local_to_utc_timestamp(start_unix_time)
         end_unix_time_utc = self.local_to_utc_timestamp(end_unix_time)
 
-        print(f" [set_voting_time] start_unix_time: {datetime.fromtimestamp(start_unix_time_utc).isoformat()}")
+        print(f" [set_voting_time] start_unix_time: {start_unix_time_utc} {datetime.fromtimestamp(start_unix_time_utc).isoformat()}")
 
 
         try:
