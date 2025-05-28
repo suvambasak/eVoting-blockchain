@@ -104,6 +104,7 @@ class Blockchain:
             ).buildTransaction(
                 {
                     "gasPrice": self.w3.eth.gas_price,
+                    "gas": 2000000,
                     "chainId": self.sepolia,
                     "from": self._wallet_address,
                     "nonce": self._get_nonce()
