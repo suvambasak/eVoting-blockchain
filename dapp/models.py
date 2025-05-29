@@ -53,6 +53,12 @@ class Voter(database.Model, UserMixin):
         nullable=False
     )
 
+    private_key_encrypted = database.Column(
+        database.String(88),
+        nullable=False,
+        unique=True
+    )
+
     vote_status = database.Column(
         database.Integer,
         nullable=False,

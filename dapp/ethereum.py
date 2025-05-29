@@ -177,13 +177,13 @@ class Blockchain:
     def fund_wallet(self, to_address):
         tx = {
             'to': to_address,
-            'value': w3.to_wei(0.002, 'ether'),
+            'value': self.w3.to_wei(0.002, 'ether'),
             'gas': 21000,
-            'gasPrice': w3.to_wei('5', 'gwei'),
-            "nonce": self._get_nonce()
+            'gasPrice': self.w3.to_wei(5, 'gwei'),
+            "nonce": self._get_nonce(),
             'chainId': self.sepolia  # Sepolia
         }
-        signed_tx = w3.eth.account.sign_transaction(tx, self._wallet_address)
-        tx_hash = w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+        signed_tx = self.w3.eth.account.sign_transaction(tx, self._wallet_address)
+        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
         return tx_hash.hex()
 
