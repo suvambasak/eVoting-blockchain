@@ -90,6 +90,10 @@ def fetch_voter_by_id(voter_id):
         id=voter_id
     ).first()
 
+def fetch_encrypted_private_key(username_hash):
+    user = Voter.query.filter_by(username_hash=username_hash).first()
+    return user.encrypted_private_key
+
 # Block section
 
 

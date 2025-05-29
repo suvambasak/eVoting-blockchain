@@ -9,7 +9,10 @@ from .db_operations import (add_new_vote_record, fetch_all_active_candidates,
                             fetch_voters_by_candidate_id)
 from .ethereum import Blockchain
 from .role import ElectionStatus
-from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin
+from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin, sha256_hash
+from .cryptography import encrypt_private_key, decrypt_private_key
+from .models import Voter
+
 
 main = Blueprint('main', __name__)
 
@@ -42,10 +45,40 @@ def cast_vote(candidate_id):
         return redirect(url_for('auth.index'))
 
     selected_candidate = fetch_candidate_by_id_restricted(candidate_id)
+    private_key = decrypt_private_key(sha256_hash(current_user.username))
+
+    # Get candidate and voter
+    selected_candidate = fetch_candidate_by_id(candidate_id)
+    voter = fetch_voter_by_id(current_user.id)
+
+    # Generate hash
+    candidate_hash, vote_hash = build_vote_cast_hash(
+        selected_candidate,
+        voter,
+        fetch_voters_by_candidate_id(selected_candidate.id)
+    )
+
+    print(f'''
+        candidate hash: {candidate_hash}
+        vote_hash: {vote_hash}
+    ''')
+
+    # Sending transaction for vote cast
+    blockchain = Blockchain(voter.wallet_address, fetch_contract_address())
+    status, tx_msg = blockchain.vote(private_key, candidate_hash, vote_hash)
+
+    if status:
+        flash(f'Transaction confirmed: {tx_msg}')
+        add_new_vote_record(voter, selected_candidate)
+    else:
+        flash(f'Transaction failed: {tx_msg}')
+
+
 
     return render_template(
         'candidates_confirm.html',
-        selected_candidate=selected_candidate
+        selected_candidate=selected_candidate,
+        private_key=private_key
     )
 
 

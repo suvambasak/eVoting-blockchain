@@ -28,16 +28,16 @@ def validate_signin(username, password):
 
 def validate_signup(
         username,
-        wallet_address,
+        # wallet_address,
         password,
         confirm_password
 ):
     if len(username) < 3:
         return (False, 'Invalid username')
 
-    w3 = Web3(Web3.HTTPProvider(WEB3_PROVIDER_URL))
-    if len(wallet_address) != 42 or not w3.isAddress(wallet_address):
-        return (False, 'Invalid wallet address')
+    # w3 = Web3(Web3.HTTPProvider(WEB3_PROVIDER_URL))
+    # if len(wallet_address) != 42 or not w3.isAddress(wallet_address):
+    #     return (False, 'Invalid wallet address')
 
     if not password:
         return (False, 'Invalid password')
