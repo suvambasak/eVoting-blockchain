@@ -44,7 +44,7 @@ def cast_vote(candidate_id):
     if is_admin(current_user):
         return redirect(url_for('auth.index'))
 
-    selected_candidate = fetch_candidate_by_id_restricted(candidate_id)
+    # selected_candidate = fetch_candidate_by_id_restricted(candidate_id)
     private_key = decrypt_private_key(sha256_hash(current_user.username))
 
     # Get candidate and voter
@@ -74,12 +74,13 @@ def cast_vote(candidate_id):
         flash(f'Transaction failed: {tx_msg}')
 
 
+    # return render_template(
+    #     'candidates_confirm.html',
+    #     selected_candidate=selected_candidate,
+    #     private_key=private_key
+    # )
+    return redirect(url_for('main.candidates'))
 
-    return render_template(
-        'candidates_confirm.html',
-        selected_candidate=selected_candidate,
-        private_key=private_key
-    )
 
 
 @main.route('/cast_vote/<int:candidate_id>/confirm', methods=['POST'])
