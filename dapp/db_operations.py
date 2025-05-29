@@ -145,6 +145,7 @@ def add_new_voter_signup(
         username_hash,
         password_hash,
         wallet_address,
+        private_key_hash,
         otp
 ):
     database.session.add(
@@ -152,6 +153,7 @@ def add_new_voter_signup(
             username_hash=username_hash,
             password=password_hash,
             wallet_address=wallet_address,
+            private_key_hash=private_key_hash,
             vote_status=False
         )
     )

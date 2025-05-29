@@ -13,6 +13,9 @@ from .mail_server import MailServer
 from .role import AccountStatus
 from .validator import (generate_opt, is_admin, sha256_hash, validate_signin,
                         validate_signup)
+from .ethereum import Blockchain
+from eth_account import Account
+
 
 auth = Blueprint('auth', __name__)
 
@@ -102,10 +105,10 @@ def signup_post():
 
     # Get input details
     username = request.form.get('username').strip()
-    wallet_address = request.form.get('walletaddr').strip()
     password = request.form.get('pwd').strip()
     confirm_password = request.form.get('cnf_pwd').strip()
-
+    # wallet_address = request.form.get('walletaddr').strip()
+    
     # Create hashs
     username_hash = sha256_hash(username)
     password_hash = generate_password_hash(password, method='sha256')
@@ -140,13 +143,29 @@ def signup_post():
             mail_agent = MailServer()
             email, _ = mail_agent.send_mail(username, otp)
             flash(f'Enter the code sent to {email}')
+        
+        # Create user wallet
+        new_wallet = Account.create()
+        address = new_wallet.address
+        private_key = new_wallet.key.hex()
 
+        # Add new user off-chain to DB
         add_new_voter_signup(
             username_hash,
             password_hash,
-            wallet_address,
+            address,
+            private_key,
             generate_password_hash(otp, method='sha256')
         )
+
+        # Create blokchain object
+        blockchain = Blockchain(
+            fetch_admin_wallet_address(),
+            fetch_contract_address()
+        )
+
+        # Fund wallet
+        tx_hash = blockchain.fund_wallet(address)
 
         return render_template('otp.html', username_hash=username_hash)
 
