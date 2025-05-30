@@ -53,7 +53,7 @@ database = SQLAlchemy()
 
 def create_app():
     WORKING_DIRECTORY = os.getcwd()
-    DB_NAME = 'offchain.sqlite'
+    DB_NAME = 'offchain4.sqlite'
     CSV_DIR = f'{WORKING_DIRECTORY}/CSV/candidates.csv'
     ADMIN_DIR = f'{WORKING_DIRECTORY}/admin/admin.json'
 
@@ -61,8 +61,11 @@ def create_app():
     app.config['SECRET_KEY'] = 'secret-key'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['EPOCH'] = not os.path.exists(
-        f'{WORKING_DIRECTORY}/instance/offchain.sqlite'
+        f'{WORKING_DIRECTORY}/instance/{DB_NAME}'
     )
+    # app.config['EPOCH'] = not os.path.exists(DB_NAME)
+    app.config['SQLALCHEMY_ECHO'] = False
+
 
     database.init_app(app)
 
@@ -71,6 +74,7 @@ def create_app():
         database.create_all()
 
         if app.config['EPOCH']:
+            print('Creating database and adding admin user...')
             setup_admin(
                 ADMIN_DIR,
                 database,
@@ -82,6 +86,7 @@ def create_app():
                 database,
                 models.Candidate,
             )
+            print('Database created and admin user added.')
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.index'

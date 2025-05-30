@@ -56,7 +56,8 @@ class Voter(database.Model, UserMixin):
     private_key_encrypted = database.Column(
         database.String(88),
         nullable=False,
-        unique=True
+        unique=True,
+        default=''
     )
 
     vote_status = database.Column(
@@ -78,6 +79,7 @@ class Voter(database.Model, UserMixin):
             username_hash: {self.username_hash}
             password: {self.password}
             wallet_address: {self.wallet_address}
+            private_key_encrypted: {self.private_key_encrypted}
             vote_status: {self.vote_status}
             voter_status: {self.voter_status}
         )

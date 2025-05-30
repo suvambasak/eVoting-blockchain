@@ -13,4 +13,4 @@ def encrypt_private_key(private_key: str) -> str:
     return fernet.encrypt(private_key.encode()).decode()
 
 def decrypt_private_key(encrypted_key: str) -> str:
-    return fernet.decrypt(encrypted_key.encode()).decode()
+    return fernet.decrypt(encrypted_key).decode()

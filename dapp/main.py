@@ -11,7 +11,6 @@ from .ethereum import Blockchain
 from .role import ElectionStatus
 from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin, sha256_hash
 from .cryptography import encrypt_private_key, decrypt_private_key
-from .models import Voter
 
 
 main = Blueprint('main', __name__)

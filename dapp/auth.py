@@ -151,14 +151,17 @@ def signup_post():
         # Create user wallet
         new_wallet = Account.create()
         address = new_wallet.address
-        private_key = new_wallet.key.hex()
+        private_key = new_wallet.key.hex()[2:]  # Remove '0x' prefix
+
+        print(f'New wallet address: {address}')
+        print(f'New wallet private key: {private_key}') 
 
         # Add new user off-chain to DB
         add_new_voter_signup(
             username_hash,
             password_hash,
             address,
-            encrypt_private_key(private_key),
+            encrypt_private_key(private_key),  # Remove '0x' prefix
             generate_password_hash(otp, method='sha256')
         )
 
