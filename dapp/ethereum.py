@@ -179,7 +179,7 @@ class Blockchain:
             'to': to_address,
             'value': self.w3.to_wei(0.002, 'ether'),
             'gas': 21000,
-            'gasPrice': self.w3.to_wei(5, 'gwei'),
+            'gasPrice': self.w3.eth.gas_price,
             "nonce": self._get_nonce(),
             'chainId': self.sepolia  # Sepolia
         }

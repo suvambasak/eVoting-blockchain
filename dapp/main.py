@@ -45,7 +45,7 @@ def cast_vote(candidate_id):
         return redirect(url_for('auth.index'))
 
     # selected_candidate = fetch_candidate_by_id_restricted(candidate_id)
-    private_key = decrypt_private_key(sha256_hash(current_user.username))
+    private_key = decrypt_private_key(current_user.private_key_encrypted)
 
     # Get candidate and voter
     selected_candidate = fetch_candidate_by_id(candidate_id)
