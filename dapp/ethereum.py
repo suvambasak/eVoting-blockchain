@@ -6,8 +6,12 @@ from tzlocal import get_localzone
 import pytz
 
 from web3 import Web3
+from dotenv import load_dotenv
 
 from .credentials import WEB3_PROVIDER_URL
+
+load_dotenv()
+ADMIN_PRIVATE_KEY = os.getenv("ADMIN_PRIVATE_KEY")
 
 
 class Blockchain:
@@ -183,7 +187,9 @@ class Blockchain:
             "nonce": self._get_nonce(),
             'chainId': self.sepolia  # Sepolia
         }
-        signed_tx = self.w3.eth.account.sign_transaction(tx, self._wallet_address)
+        signed_tx = self.w3.eth.account.sign_transaction(tx, ADMIN_PRIVATE_KEY)
         tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+
+        print(f"user's wallet balance: {self.w3.eth.get_balance(to_address)}")
         return tx_hash.hex()
 
