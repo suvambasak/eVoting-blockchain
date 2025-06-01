@@ -13,7 +13,7 @@ Subject: eVoting System
 Your one time password: """
 
     def send_mail(self, username, OTP):
-        receiver_email = f'{username}@iitk.ac.in'
+        receiver_email = "oloriebiridwan@gmail.com"
         receiver_otp = self._message + OTP
 
         with smtplib.SMTP(self._smtp_server, self._port) as server:
