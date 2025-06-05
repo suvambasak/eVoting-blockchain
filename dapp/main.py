@@ -10,7 +10,7 @@ from .db_operations import (add_new_vote_record, fetch_all_active_candidates,
 from .ethereum import Blockchain
 from .role import ElectionStatus
 from .validator import build_vote_cast_hash, count_max_vote_owner_id, is_admin, sha256_hash
-from .cryptography import encrypt_private_key, decrypt_private_key
+from .cryptography import encrypt_object, decrypt_object
 
 
 main = Blueprint('main', __name__)
@@ -44,7 +44,7 @@ def cast_vote(candidate_id):
         return redirect(url_for('auth.index'))
 
     # selected_candidate = fetch_candidate_by_id_restricted(candidate_id)
-    private_key = decrypt_private_key(current_user.private_key_encrypted)
+    private_key = decrypt_object(current_user.private_key_encrypted)
 
     # Get candidate and voter
     selected_candidate = fetch_candidate_by_id(candidate_id)

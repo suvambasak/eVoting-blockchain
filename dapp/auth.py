@@ -11,13 +11,14 @@ from .db_operations import (add_new_voter_signup, delete_OTP,
                             is_unverified_account,
                             is_username_hash_already_exists,
                             fetch_encrypted_private_key,
-                            is_wallet_address_already_exists)
+                            is_wallet_address_already_exists,
+                            is_email_already_exists)
 from .mail_server import MailServer
 from .role import AccountStatus
 from .validator import (generate_opt, is_admin, sha256_hash, validate_signin,
                         validate_signup)
 from .ethereum import Blockchain
-from .cryptography import encrypt_private_key, decrypt_private_key
+from .cryptography import encrypt_object, decrypt_object
 from eth_account import Account
 
 
@@ -111,11 +112,13 @@ def signup_post():
     username = request.form.get('username').strip()
     password = request.form.get('pwd').strip()
     confirm_password = request.form.get('cnf_pwd').strip()
+    email = request.form.get('email').strip()
     # wallet_address = request.form.get('walletaddr').strip()
     
     # Create hashs
     username_hash = sha256_hash(username)
     password_hash = generate_password_hash(password, method='sha256')
+    # password_enc = encrypt_object(password)
 
     # Validate inputs
     valid, msg = validate_signup(
@@ -133,6 +136,9 @@ def signup_post():
         flash('Already registerd voter')
         return redirect(url_for('auth.index'))
 
+    if is_email_already_exists(encrypt_object(email)):
+        flash('Email is already used')
+        return redirect(url_for('auth.signup'))
     # # If duplicate wallet address
     # elif is_wallet_address_already_exists(wallet_address):
     #     flash('Incorrect wallet address')
@@ -145,7 +151,8 @@ def signup_post():
 
         if EMAIL_SERVICE:
             mail_agent = MailServer()
-            email, _ = mail_agent.send_mail(username, otp)
+            status = mail_agent.send_mail(username, email, otp)
+            print(f'Otp email to {email}: {status}')
             flash(f'Enter the code sent to {email}')
         
         # Create user wallet
@@ -160,8 +167,9 @@ def signup_post():
         add_new_voter_signup(
             username_hash,
             password_hash,
+            encrypt_object(email),
             address,
-            encrypt_private_key(private_key),  # Remove '0x' prefix
+            encrypt_object(private_key),  # Remove '0x' prefix
             generate_password_hash(otp, method='sha256')
         )
 

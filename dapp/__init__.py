@@ -7,7 +7,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
-from .cryptography import encrypt_private_key
+from .cryptography import encrypt_object
 
 
 def init_candidates(path, db, Candidate):
@@ -54,7 +54,7 @@ database = SQLAlchemy()
 
 def create_app():
     WORKING_DIRECTORY = os.getcwd()
-    DB_NAME = 'offchain5.sqlite'
+    DB_NAME = 'offchain6.sqlite'
     CSV_DIR = f'{WORKING_DIRECTORY}/CSV/candidates.csv'
     ADMIN_DIR = f'{WORKING_DIRECTORY}/admin/admin.json'
 

@@ -42,6 +42,13 @@ class Voter(database.Model, UserMixin):
         nullable=False
     )
 
+    email_encrypted = database.Column(
+        database.String(88),
+        nullable = False,
+        unique = True,
+        default = ''
+    )
+
     password = database.Column(
         database.String(88),
         nullable=False
@@ -78,6 +85,7 @@ class Voter(database.Model, UserMixin):
             id: {self.id}
             username_hash: {self.username_hash}
             password: {self.password}
+            email_encrypted: {self.email_encrypted}
             wallet_address: {self.wallet_address}
             private_key_encrypted: {self.private_key_encrypted}
             vote_status: {self.vote_status}

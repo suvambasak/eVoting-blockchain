@@ -9,8 +9,8 @@ FERNET_KEY = os.environ.get("FERNET_KEY")
 fernet = Fernet(FERNET_KEY)
 
 # Encryption functions
-def encrypt_private_key(private_key: str) -> str:
-    return fernet.encrypt(private_key.encode()).decode()
+def encrypt_object(obj: str) -> str:
+    return fernet.encrypt(obj.encode()).decode()
 
-def decrypt_private_key(encrypted_key: str) -> str:
+def decrypt_object(encrypted_key: str) -> str:
     return fernet.decrypt(encrypted_key).decode()
