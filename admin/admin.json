@@ -1,6 +1,7 @@
 {
     "username": "admin",
     "passwd": "admin123",
-    "wallet": "0xf5D567f24d7e9a98687a5cd9b225792AFEFEbEB3",
-    "contract_address": "0x134Cad250b0193192794ea91187d541cbcB96f8B"
+    "wallet": "0x6C0aFB8EbF46bEDf452d6eA73A6C9E3afBF66bA5",
+    "contract_address": "0x5CC39D8dC3428cfe83fe1C3Caf07519719c7567C",
+    "private_key": "c8d6d4c9155cbf3a27819479a21a72ea35c0c641ec7791b416377e7852499b59"
 }

@@ -90,6 +90,10 @@ def fetch_voter_by_id(voter_id):
         id=voter_id
     ).first()
 
+def fetch_encrypted_private_key(username_hash):
+    user = Voter.query.filter_by(username_hash=username_hash).first()
+    return user.encrypted_private_key
+
 # Block section
 
 
@@ -125,6 +129,14 @@ def is_username_hash_already_exists(username_hash):
     return False
 
 
+def is_email_already_exists(email):
+    if Voter.query.filter_by(
+        email_encrypted=email
+    ).all():
+        return True
+    return False
+
+
 def is_wallet_address_already_exists(wallet_address):
     if Voter.query.filter_by(
         wallet_address=wallet_address
@@ -144,14 +156,18 @@ def add_new_vote_record(voter, candidate):
 def add_new_voter_signup(
         username_hash,
         password_hash,
+        email_encrypted,
         wallet_address,
+        private_key_encrypted,
         otp
 ):
     database.session.add(
         Voter(
             username_hash=username_hash,
             password=password_hash,
+            email_encrypted=email_encrypted,
             wallet_address=wallet_address,
+            private_key_encrypted=private_key_encrypted,
             vote_status=False
         )
     )

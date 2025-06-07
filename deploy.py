@@ -7,6 +7,8 @@ from solcx import compile_standard
 from web3 import Web3
 
 from dapp.credentials import WEB3_PROVIDER_URL
+from dapp.ethereum import Blockchain
+
 
 solcx.install_solc('0.8.19')
 w3 = Web3(Web3.HTTPProvider(WEB3_PROVIDER_URL))
@@ -76,3 +78,7 @@ with open('contract/ABI.json', 'w') as ABI_file:
 
 with open('admin/admin.json', 'w') as json_file:
     json_file.write(json.dumps(admin_details, indent=4))
+
+# Print current block.timestamp from contract
+bc = Blockchain(admin_wallet, tx_receipt.contractAddress)
+bc.print_current_block_timestamp()

@@ -50,4 +50,8 @@ contract EVoting {
         require(block.timestamp < endVotingTime, "Voting already ended");
         endVotingTime = _newEndTime;
     }
+
+    function getCurrentTimestamp() public view returns (uint) {
+    return block.timestamp;
+}
 }
